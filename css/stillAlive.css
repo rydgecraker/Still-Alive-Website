@@ -43,10 +43,12 @@ header h1 {
 }
 
 #headspace {
-    background-color: rgba(80, 10, 10, 0.9);
+    background-color: rgba(80, 10, 10, 0.7);
     border-radius: 5em;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+    padding: 0;
+    margin: 0;
 }
 
 nav {
@@ -59,8 +61,42 @@ nav a:link, nav a:visited {
     color: #888888;
     font-weight: bolder;
     font-size: 150%;
+    padding: 0;
+    margin: 0;
+    text-align: center;
 }
 
 nav ul {
     list-style-type: none;
+    padding: 0;
+    margin: 0;
 }
+
+#homepageContent {
+    background-color: rgba(80, 10, 10, 0.7);
+}
+
+#bodyspace {
+    padding: 0;
+    margin: 0px 0px 0px 10%;
+    background-color: rgba(160, 130, 130, 0.75);
+    width: 80%;
+    border-radius: 3em;
+}
+
+#homepageIntro {
+    margin-top: 0;
+    width: 90%;
+    margin-left: 5%;
+}
+
+#homepageIntro h1 {
+    margin-top: 0;
+    text-align: center;
+    text-transform: capitalize;
+}
+
+#bodyspace footer {
+    text-align: center;
+}
+

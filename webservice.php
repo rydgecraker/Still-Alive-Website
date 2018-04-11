@@ -23,7 +23,7 @@
         while ($row = $query->fetch())
         {
             foreach ($row as $key => $value) {
-                echo $row[$key] . "\n";
+                echo $key . ":" . $row[$key] . "\n";
             }
         }
         

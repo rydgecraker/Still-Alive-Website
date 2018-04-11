@@ -1,4 +1,6 @@
 <?php
+    ini_set('display_errors', 1); 
+    error_reporting(-1);
         /* require the user as the parameter */
     if(isset($_GET['user']) && intval($_GET['user'])) {
 

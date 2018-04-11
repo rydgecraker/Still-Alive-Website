@@ -8,8 +8,7 @@
             $user_id = intval($_GET['user']); //no default
 
             /* connect to the db */
-            $link = mysql_connect('localhost','root','stillalive') or die('Cannot connect to the DB');
-            mysql_select_db('StillAlive',$link) or die('Cannot select the DB');
+            $link = mysql_connect('localhost','root','stillalive', "StillAlive") or die('Cannot connect to the DB');
 
             /* grab the posts from the db */
             $query = "SELECT * FROM Players WHERE playerID = $user_id";

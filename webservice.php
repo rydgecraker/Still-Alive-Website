@@ -22,7 +22,9 @@
         $query->execute([$username]);
         while ($row = $query->fetch())
         {
-            echo $row['name'] . "\n";
+            foreach ($row as $key => $value) {
+                echo $row[$key] . "\n";
+            }
         }
         
         

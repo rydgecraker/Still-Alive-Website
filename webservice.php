@@ -25,7 +25,7 @@
         
         $resultJSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
         
-        echo $resultJSON;
+        echo "<p>" . $resultJSON . "</p>";
         
         
                     /* soak in the passed variable or set our own */

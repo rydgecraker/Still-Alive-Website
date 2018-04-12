@@ -21,8 +21,8 @@
         $pdo = new PDO($dsn, $user, $pass, $opt);
         
         //$query = $pdo->prepare('SELECT * FROM Players WHERE username = ?');
-        $query = $pdo->prepare('SELECT * FROM Players;');
-        $query->execute([$username]);
+        //$query->execute([$username]);
+        $query = $pdo->query('SELECT * FROM Players');
         
         $resultJSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
         

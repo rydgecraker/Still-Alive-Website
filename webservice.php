@@ -26,11 +26,22 @@
         return date('Y-m-d');
     }
     
-    function getCurrentTime(){
-        return date("H:i:s", time());
+    function getTorrowDate(){
+        $date = new DateTime('tomorrow');
+        return $date->format('Y-m-d')
     }
     
-    if(isset($_GET['username'])) {
+    function getCurrentTime(){
+        return date('H:i:s', time());
+    }
+    
+
+    
+    function isGiven($input) {
+        return isset($_GET[$input]);
+    }
+    
+    if(isGiven('username')) {
         
         $username = sanitizeString('username');
         
@@ -59,7 +70,7 @@
             break;
         }
         
-        if(isset($_GET['create'])) {
+        if(isGiven('create')) {
             $createEntryInTable = sanitizeString('create');
             
             $response = "";
@@ -68,7 +79,7 @@
                     if($usernameExists) {
                         $response = "ERROR: PLAYER USERNAME ALREADY EXISTS";
                     } else {
-                        if(isset($_GET['name']) && isset($_GET['experience']) && isset($_GET['freeSkills'])) {
+                        if(isGiven('name') && isGiven('experience') && isGiven('freeSkills')) {
 
                            //request should look like:
                            //username=someusername&create=Players&name=somename&experience=0&freeSkills=0
@@ -97,7 +108,7 @@
                     if(!$usernameExists) {
                         $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
                     } else {
-                        if(isset($_GET['name'])) {
+                        if(isGiven('name')) {
 
                             //request should look like:
                             //username=someusername&create=Characters&name=somename&bio=someBio
@@ -106,7 +117,7 @@
                             $name = sanitizeString('name');
                             
                             $bio = "-None Given-";
-                            if(isset($_GET['bio'])) {
+                            if(isGiven('bio')) {
                                 $bio = sanitizeString('bio');
                             }
                             
@@ -139,17 +150,16 @@
                     if(!$usernameExists) {
                         $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
                     } else {
-                        if(isset($_GET['event'])) {
+                        if(isGiven('event')) {
 
                             //request should look like:
                             //username=someusername&create=EventAttendees&event=eventIDnum&character=someCharacterID
-                            //time is in armyTime 00:00:00
                             //character is optional
                             
                             $eventID = sanitizeInt('event');
                             $playerID = getPlayerID($pdo, $username);
                             $characterID = null;
-                            if(isset($_GET['character'])) {
+                            if(isGiven('character')) {
                                 $characterID = sanitizeInt('character');
                             }
                             
@@ -172,7 +182,36 @@
                     }
                     break;
                 case "Events":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isGiven('startTime') && isGiven('endTime') && isGiven('name') && isGiven('desc')) {
 
+                            //request should look like:
+                            //username=someusername&create=Events&startTime=someStartTime&endTime=someEndTime&name=someEventName&desc=someDescription
+                            //times are in armyTime 00:00:00 - 23:59:59
+                            //character is optional
+                            
+                            $start = sanitizeString('startTime');
+                            $end = sanitizeString('endTime');
+                            $name = sanitizeString('name');
+                            $desc = sanitizeString('desc');
+                            
+                            try {
+                                 $pdo->beginTransaction();
+                                 $query = $pdo->prepare("INSERT INTO Events (startDate, endDate, startTime, endTime, eventRunning, name, description) " .
+                                         "VALUES (?, ?, ?, ?, 0, ?, ?)");
+                                 $query->execute([getCurrentDate(), getTomorrowDate(), $start, $end, $name, $desc]);
+                                 $pdo->commit();
+                                 $response = "Sucessfully added a new Event to the Events Database.";
+                            }catch (Exception $e){
+                                $pdo->rollback();
+                                throw $e;
+                            } 
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $createEntryInTable table";
+                        }
+                    }
                     break;
                 case "HistoricalEvents":
 

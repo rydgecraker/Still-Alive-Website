@@ -5,7 +5,7 @@
     if(isset($_GET['username']) && intval($_GET['username'])) {
         
         $username = trim(strval($_GET['username']));
-        
+        echo "'" . $username . "'";
         
         $host = 'localhost';
         $db   = 'StillAlive';

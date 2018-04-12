@@ -22,12 +22,10 @@
         
         $query = $pdo->prepare('SELECT * FROM Players WHERE username = ?');
         $query->execute([$username]);
-        while ($row = $query->fetch())
-        {
-            foreach ($row as $key => $value) {
-                echo $key . ":" . $row[$key] . PHP_EOL;
-            }
-        }
+        
+        $resultJSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+        
+        echo $resultJSON
         
         
                     /* soak in the passed variable or set our own */

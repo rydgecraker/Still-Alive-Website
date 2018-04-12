@@ -28,7 +28,7 @@
     
     function getTorrowDate(){
         $date = new DateTime('tomorrow');
-        return $date->format('Y-m-d')
+        return $date->format('Y-m-d');
     }
     
     function getCurrentTime(){
@@ -206,7 +206,6 @@
                                  $response = "Sucessfully added a new Event to the Events Database.";
                             }catch (Exception $e){
                                 $pdo->rollback();
-                                echo "ERROR BAD STUFF";
                                 throw $e;
                             } 
                         } else {

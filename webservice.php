@@ -3,11 +3,38 @@
     error_reporting(-1);
         /* require the user as the parameter */
     
+    function sanitizeString($input){
+        return filter_input(INPUT_GET, $input, FILTER_SANITIZE_STRING);
+    }
+    
+    function sanitizeInt($input) {
+        return filter_input(INPUT_GET, $input, FILTER_SANITIZE_NUMBER_INT);
+    }
+    
+    function getPlayerID($pdo, $username){
+        $playerID;
+        $query = $pdo->prepare('SELECT * FROM Players WHERE username = ?');
+        $query->execute([$username]);
+            while($row = $query->fetch()) {
+                $playerID = $row['playerID'];
+                break;
+            }
+        return $playerID;
+    }
+    
+    function getCurrentDate(){
+        return date('Y-m-d');
+    }
+    
+    function getCurrentTime(){
+        return date("H:i:s", time());
+    }
+    
     if(isset($_GET['username'])) {
         
-        $username = filter_input(INPUT_GET, "username", FILTER_SANITIZE_STRING);
+        $username = sanitizeString('username');
         
-                $host = 'localhost';
+        $host = 'localhost';
         $db   = 'StillAlive';
         $user = 'root';
         $pass = 'stillalive';
@@ -33,7 +60,7 @@
         }
         
         if(isset($_GET['create'])) {
-            $createEntryInTable = filter_input(INPUT_GET, "create", FILTER_SANITIZE_STRING);
+            $createEntryInTable = sanitizeString('create');
             
             $response = "";
             switch($createEntryInTable) {
@@ -46,9 +73,9 @@
                            //request should look like:
                            //username=someusername&create=Players&name=somename&experience=0&freeSkills=0
 
-                           $name = filter_input(INPUT_GET, "name", FILTER_SANITIZE_STRING);
-                           $xp = filter_input(INPUT_GET, "experience", FILTER_SANITIZE_NUMBER_INT);
-                           $freeSkills = filter_input(INPUT_GET, "freeSkills", FILTER_SANITIZE_NUMBER_INT);
+                           $name = sanitizeString('name');
+                           $xp = sanitizeInt('experience');
+                           $freeSkills = sanitizeInt('freeSkills');
 
                             try {
                                  $pdo->beginTransaction();
@@ -76,25 +103,20 @@
                             //username=someusername&create=Characters&name=somename&bio=someBio
                             //bio is optional
                             
-                            $name = filter_input(INPUT_GET, "name", FILTER_SANITIZE_STRING);
+                            $name = sanitizeString('name');
+                            
                             $bio = "-None Given-";
                             if(isset($_GET['bio'])) {
-                                $bio = filter_input(INPUT_GET, 'bio', FILTER_SANITIZE_STRING);
+                                $bio = sanitizeString('bio');
                             }
                             
-                            $playerID;
-                            $query = $pdo->prepare('SELECT * FROM Players WHERE username = ?');
-                            $query->execute([$username]);
-                            while($row = $query->fetch()) {
-                                $playerID = $row['playerID'];
-                                break;
-                            }
+                            $playerID = getPlayerID($pdo, $username);
                             
                             try {
                                  $pdo->beginTransaction();
                                  $query = $pdo->prepare("INSERT INTO Characters (playerID, name, startDate, isAlive, numSkills, spentXp, freeSkillsSpent, infection, primaryWeaponID, bullets, megas, accus, millitaries, rockets, bio, bulletCasings, megaCasings, accuCasings, millitaryCasings, rocketCasings, techParts, mechParts, stone, wood, metal, cloth) " .
                                          "VALUES (?, ?, ?, 1, 4, 0, 0, 0, 1, 0, 0, 0, 0, 0, ?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)");
-                                 $query->execute([$playerID, $name, date('Y-m-d'), $bio]);
+                                 $query->execute([$playerID, $name, getCurrentDate(), $bio]);
                                  $pdo->commit();
                                  $response = "Sucessfully added a new character to the Characters Database with the playerID $playerID ($username)";
                             }catch (Exception $e){
@@ -107,10 +129,47 @@
                     }
                     break;
                 case "CharacterSkills":
-
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: UNIMPLEMENTED UNTIL SKILLS ARE IN DATABASE";
+                    }
                     break;
                 case "EventAttendees":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isset($_GET['name'])) {
 
+                            //request should look like:
+                            //username=someusername&create=EventAttendees&event=eventIDnum&character=someCharacterID
+                            //time is in armyTime 00:00:00
+                            //character is optional
+                            
+                            $eventID = sanitizeInt('event');
+                            $playerID = getPlayerID($pdo, $username);
+                            $characterID = null;
+                            if(isset($_GET['character'])) {
+                                $characterID = sanitizeInt('character');
+                            }
+                            
+                            
+                            
+                            try {
+                                 $pdo->beginTransaction();
+                                 $query = $pdo->prepare("INSERT INTO EventAttendees (eventID, playerID, characterID, checkinTime) " .
+                                         "VALUES (?, ?, ?, ?)");
+                                 $query->execute([$eventID, $playerID, $characterID, getCurrentTime()]);
+                                 $pdo->commit();
+                                 $response = "Sucessfully added a new EventAttendee to the EventAttendees Database with the playerID $playerID ($username)";
+                            }catch (Exception $e){
+                                $pdo->rollback();
+                                throw $e;
+                            } 
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $createEntryInTable table";
+                        }
+                    }
                     break;
                 case "Events":
 

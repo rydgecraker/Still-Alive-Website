@@ -239,9 +239,9 @@
                             
                             try {
                                  $pdo->beginTransaction();
-                                 $query = $pdo->prepare("INSERT INTO HistoricalEvents (playerID, CharacterID, eventID, name, description) " .
-                                         "VALUES (?, ?, ?, ?, ?)");
-                                 $query->execute([$playerID, $characterID, $eventID, $name, $desc]);
+                                 $query = $pdo->prepare("INSERT INTO HistoricalEvents (playerID, CharacterID, eventID, name, description, date) " .
+                                         "VALUES (?, ?, ?, ?, ?, ?)");
+                                 $query->execute([$playerID, $characterID, $eventID, $name, $desc, getCurrentDate()]);
                                  $result = $pdo->commit();
                                  
                                  if($result) {

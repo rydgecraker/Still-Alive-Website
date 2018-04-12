@@ -24,59 +24,75 @@
         
         $JSON;
         
-        switch ($table) {
-        case "Players":
-            $query = $pdo->query('SELECT * FROM Players');
-            $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+        $query = $pdo->query('SELECT * FROM Players WHERE playerID = ?');
+        $pdo->exec($username);
+        $exists = false;
+        while($row = $query->fetch()) {
+            $exists = true;
             break;
-        case "Characters":
-            $query = $pdo->query('SELECT * FROM Characters');
-            $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
-            break;
-        case "CharacterSkills":
-            $query = $pdo->query('SELECT * FROM CharacterSkills');
-            $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
-            break;
-        case "EventAttendees":
-            $query = $pdo->query('SELECT * FROM EventAttendees');
-            $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
-            break;
-        case "Events":
-            $query = $pdo->query('SELECT * FROM Events');
-            $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
-            break;
-        case "HistoricalEvents":
-            $query = $pdo->query('SELECT * FROM HistoricalEvents');
-            $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
-            break;
-        case "Items":
-            $query = $pdo->query('SELECT * FROM Items');
-            $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
-            break;
-        case "PrimaryWeapons":
-            $query = $pdo->query('SELECT * FROM PrimaryWeapons');
-            $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
-            break;
-        case "Skills":
-            $query = $pdo->query('SELECT * FROM SkillPrerequisites');
-            $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
-            break;
-        case "SkillPrerequisites":
-            $query = $pdo->query('SELECT * FROM Skills');
-            $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
-            break;
-        case "SkillTypes":
-            $query = $pdo->query('SELECT * FROM SkillTypes');
-            $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
-            break;
-        default:
-            $JSON = "ERROR: COULD NOT FIND SPECIFIED TABLE";
-            break;
-     }
+        }
+        
+        if(exists){
+            switch ($table) {
+                case "Players":
+                    $query = $pdo->query('SELECT * FROM Players');
+                    $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+                    break;
+                case "Characters":
+                    $query = $pdo->query('SELECT * FROM Characters');
+                    $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+                    break;
+                case "CharacterSkills":
+                    $query = $pdo->query('SELECT * FROM CharacterSkills');
+                    $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+                    break;
+                case "EventAttendees":
+                    $query = $pdo->query('SELECT * FROM EventAttendees');
+                    $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+                    break;
+                case "Events":
+                    $query = $pdo->query('SELECT * FROM Events');
+                    $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+                    break;
+                case "HistoricalEvents":
+                    $query = $pdo->query('SELECT * FROM HistoricalEvents');
+                    $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+                    break;
+                case "Items":
+                    $query = $pdo->query('SELECT * FROM Items');
+                    $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+                    break;
+                case "PrimaryWeapons":
+                    $query = $pdo->query('SELECT * FROM PrimaryWeapons');
+                    $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+                    break;
+                case "Skills":
+                    $query = $pdo->query('SELECT * FROM SkillPrerequisites');
+                    $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+                    break;
+                case "SkillPrerequisites":
+                    $query = $pdo->query('SELECT * FROM Skills');
+                    $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+                    break;
+                case "SkillTypes":
+                    $query = $pdo->query('SELECT * FROM SkillTypes');
+                    $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+                    break;
+                default:
+                    $JSON = "ERROR: COULD NOT FIND SPECIFIED TABLE";
+                    break;
+            }
+
+             echo $JSON;
+        } else {
+            echo "ERROR: PLAYER DOES NOT EXIST";
+        }
         
         
         
-     echo $JSON;
+        
+        
+
         
         
                     /* soak in the passed variable or set our own */

@@ -283,7 +283,31 @@
                     }
                     break;
                 case "PrimaryWeapons":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isGiven('desc')) {
 
+                            //request should look like:
+                            //username=someusername&create=PrimaryWeapons&desc=someDescription
+                            $desc = sanitizeString('desc');
+                                                 
+                            try {
+                                $pdo->beginTransaction();
+                                $query = $pdo->prepare("INSERT INTO PrimaryWeapons (description) " .
+                                        "VALUES (?)");
+                                $query->execute([$desc]);
+                                $pdo->commit();
+                                $response = "Sucessfully added a new Primary Weapon to the PrimaryWeapons Table.";
+                                 
+                            }catch (Exception $e){
+                                $pdo->rollback();
+                                throw $e;
+                            } 
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $createEntryInTable table";
+                        }
+                    }
                     break;
                 case "Skills":
 

@@ -227,12 +227,12 @@
                             $desc = sanitizeString('desc');
                             $playerID = getPlayerID($pdo, $username);
                             
-                            $characterID = PDO::PARAM_NULL;
+                            $characterID = null;
                             if(isGiven('character')) {
                                 $characterID = sanitizeInt('character');
                             }
                             
-                            $eventID = PDO::PARAM_NULL;
+                            $eventID = null;
                             if(isGiven('event')) {
                                 $eventID = sanitizeInt('event');
                             }

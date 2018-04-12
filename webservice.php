@@ -139,7 +139,7 @@
                     if(!$usernameExists) {
                         $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
                     } else {
-                        if(isset($_GET['name'])) {
+                        if(isset($_GET['event'])) {
 
                             //request should look like:
                             //username=someusername&create=EventAttendees&event=eventIDnum&character=someCharacterID

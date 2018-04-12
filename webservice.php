@@ -206,6 +206,7 @@
                                  $response = "Sucessfully added a new Event to the Events Database.";
                             }catch (Exception $e){
                                 $pdo->rollback();
+                                echo "ERROR BAD STUFF";
                                 throw $e;
                             } 
                         } else {

@@ -245,10 +245,10 @@
                                 
                                 $errors = $query->errorInfo();
                                 foreach($errors as $key) {
-                                    echo $errors[$key];
+                                    echo $key;
                                 }
-                                 $pdo->commit();
-                                 $response = "Sucessfully added a new HistoricalEvent to the HistoricalEvents Database.";
+                                $pdo->commit();
+                                $response = "Sucessfully added a new HistoricalEvent to the HistoricalEvents Database.";
                                  
                             }catch (Exception $e){
                                 $pdo->rollback();

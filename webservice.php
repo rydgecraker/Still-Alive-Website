@@ -2,9 +2,10 @@
     ini_set('display_errors', 1); 
     error_reporting(-1);
         /* require the user as the parameter */
-    if(isset($_GET['username'])) {
+    if(isset($_GET['username']) &&isset($_GET['table'])) {
         
         $username = filter_input(INPUT_GET, "username", FILTER_SANITIZE_STRING);
+        $table = filter_input(INPUT_GET, "table", FILTER_SANITIZE_STRING);
         
         $host = 'localhost';
         $db   = 'StillAlive';
@@ -13,21 +14,6 @@
         $charset = 'utf8mb4';
         
         
-        $query;
-        
-        $playersJSON;
-        $charactersJSON;
-        $characterSkillsJSON;
-        $eventAttendeesJSON;
-        $eventsJSON;
-        $historicalEventsJSON;
-        $itemsJSON;
-        $primaryWeaponsJSON;
-        $skillPrerequisitesJSON;
-        $skillsJSON;
-        $skillTypesJSON;
-        
-
         $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
         $opt = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
@@ -36,52 +22,62 @@
         ];
         $pdo = new PDO($dsn, $user, $pass, $opt);
         
-        //$query = $pdo->prepare('SELECT * FROM Players WHERE username = ?');
-        //$query->execute([$username]);
-        $query = $pdo->query('SELECT * FROM Players');
-        $playersJSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+        $JSON;
         
-        $query = $pdo->query('SELECT * FROM Characters');
-        $charactersJSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+        switch ($table) {
+        case "Players":
+            $query = $pdo->query('SELECT * FROM Players');
+            $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+            break;
+        case "Characters":
+            $query = $pdo->query('SELECT * FROM Characters');
+            $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+            break;
+        case "CharacterSkills":
+            $query = $pdo->query('SELECT * FROM CharacterSkills');
+            $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+            break;
+        case "EventAttendees":
+            $query = $pdo->query('SELECT * FROM EventAttendees');
+            $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+            break;
+        case "Events":
+            $query = $pdo->query('SELECT * FROM Events');
+            $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+            break;
+        case "HistoricalEvents":
+            $query = $pdo->query('SELECT * FROM HistoricalEvents');
+            $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+            break;
+        case "Items":
+            $query = $pdo->query('SELECT * FROM Items');
+            $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+            break;
+        case "PrimaryWeapons":
+            $query = $pdo->query('SELECT * FROM PrimaryWeapons');
+            $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+            break;
+        case "Skills":
+            $query = $pdo->query('SELECT * FROM SkillPrerequisites');
+            $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+            break;
+        case "SkillPrerequisites":
+            $query = $pdo->query('SELECT * FROM Skills');
+            $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+            break;
+        case "SkillTypes":
+            $query = $pdo->query('SELECT * FROM SkillTypes');
+            $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+            break;
+        default:
+            $JSON = "ERROR: COULD NOT FIND SPECIFIED TABLE";
+            break;
+     }
         
-        $query = $pdo->query('SELECT * FROM CharacterSkills');
-        $characterSkillsJSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
         
-        $query = $pdo->query('SELECT * FROM EventAttendees');
-        $eventAttendeesJSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
         
-        $query = $pdo->query('SELECT * FROM Events');
-        $eventsJSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+     echo $JSON;
         
-        $query = $pdo->query('SELECT * FROM HistoricalEvents');
-        $historicalEventsJSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
-        
-        $query = $pdo->query('SELECT * FROM Items');
-        $itemsJSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
-        
-        $query = $pdo->query('SELECT * FROM PrimaryWeapons');
-        $primaryWeaponsJSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
-        
-        $query = $pdo->query('SELECT * FROM SkillPrerequisites');
-        $skillPrerequisitesJSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
-        
-        $query = $pdo->query('SELECT * FROM Skills');
-        $skillsJSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
-        
-        $query = $pdo->query('SELECT * FROM SkillTypes');
-        $skillTypesJSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
-        
-        echo $playersJSON;
-        echo $charactersJSON;
-        echo $characterSkillsJSON;
-        echo $eventAttendeesJSON;
-        echo $eventsJSON;
-        echo $historicalEventsJSON;
-        echo $itemsJSON;
-        echo $primaryWeaponsJSON;
-        echo $skillPrerequisitesJSON;
-        echo $skillsJSON;
-        echo $skillTypesJSON;
         
                     /* soak in the passed variable or set our own */
 //            $number_of_posts = isset($_GET['num']) ? intval($_GET['num']) : 10; //10 is the default

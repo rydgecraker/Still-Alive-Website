@@ -4,7 +4,7 @@
         /* require the user as the parameter */
     if(isset($_GET['username']) && intval($_GET['username'])) {
         
-        $username = filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING);
+        $username = filter_input(INPUT_GET, "username", FILTER_SANITIZE_STRING);
         echo "'" . $username . "'";
         
         $host = 'localhost';

@@ -26,7 +26,7 @@
         return date('Y-m-d');
     }
     
-    function getTorrowDate(){
+    function getTomorrowDate(){
         $date = new DateTime('tomorrow');
         return $date->format('Y-m-d');
     }

@@ -4,7 +4,7 @@
         /* require the user as the parameter */
     if(isset($_GET['username']) && intval($_GET['username'])) {
         
-        $username = strval($_GET['username']);
+        $username = trim(strval($_GET['username']));
         
         
         $host = 'localhost';

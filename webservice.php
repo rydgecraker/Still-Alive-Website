@@ -143,7 +143,7 @@
         } else if (isset($_GET['table'])){
             $table = filter_input(INPUT_GET, "table", FILTER_SANITIZE_STRING);
 
-            if($exists){
+            if($usernameExists){
                 switch ($table) {
                     case "Players":
                         $query = $pdo->query('SELECT * FROM Players');

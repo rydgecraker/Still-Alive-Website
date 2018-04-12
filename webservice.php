@@ -39,7 +39,7 @@
                 $response = "";
                 switch($createEntryInTable) {
                     case "Players":
-                        if(isset($_GET['name']) && issset($_GET['experience']) && isset($_GET['freeSkills'])) {
+                        if(isset($_GET['name']) && isset($_GET['experience']) && isset($_GET['freeSkills'])) {
                             
                             $name = filter_input(INPUT_GET, "name", FILTER_SANITIZE_STRING);
                             $xp = filter_input(INPUT_GET, "experience", FILTER_SANITIZE_NUMBER_INT);

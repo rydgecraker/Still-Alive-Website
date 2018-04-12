@@ -223,25 +223,26 @@
                             //username=someusername&create=HistoricalEvents&character=someCharID&event=someEventID&name=someName&desc=someDescription
                             //character and event are optional
                             
-                            $name = sanitizeString('name');
-                            $desc = sanitizeString('desc');
-                            $playerID = getPlayerID($pdo, $username);
+                            $namer = sanitizeString('name');
+                            $descr = sanitizeString('desc');
+                            $playerrID = getPlayerID($pdo, $username);
                             
-                            $characterID = null;
+                            $characterrID = null;
                             if(isGiven('character')) {
-                                $characterID = sanitizeInt('character');
+                                $characterrID = sanitizeInt('character');
                             }
                             
-                            $eventID = null;
+                            $eventrID = null;
                             if(isGiven('event')) {
-                                $eventID = sanitizeInt('event');
+                                $eventrID = sanitizeInt('event');
                             }
                             
                             try {
                                  $pdo->beginTransaction();
                                  $query = $pdo->prepare("INSERT INTO HistoricalEvents (playerID, characterID, eventID, name, description, date) " .
                                          "VALUES (?, ?, ?, ?, ?, ?)");
-                                 $query->execute([$playerID, $characterID, $eventID, $name, $desc, getCurrentDate()]) or die(print_r($query->errorInfo(), true));
+                                 $query->execute([$playerrID, $characterrID, $eventrID, $namer, $descr, getCurrentDate()]) or die(print_r($query->errorInfo(), true));
+                                 echo "ERROR" . $stmt->error;
                                  $pdo->commit();
                                  $response = "Sucessfully added a new HistoricalEvent to the HistoricalEvents Database.";
                                  

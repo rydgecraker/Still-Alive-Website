@@ -3,7 +3,10 @@
     error_reporting(-1);
         /* require the user as the parameter */
     if(isset($_GET['username']) && intval($_GET['username'])) {
+        
         $username = intval($_GET['username']);
+        
+        
         $host = 'localhost';
         $db   = 'StillAlive';
         $user = 'root';
@@ -18,7 +21,7 @@
         ];
         $pdo = new PDO($dsn, $user, $pass, $opt);
         
-        $query = $pdo->prepare('SELECT * FROM Players WHERE playerID = ?');
+        $query = $pdo->prepare('SELECT * FROM Players WHERE username = ?');
         $query->execute([$username]);
         while ($row = $query->fetch())
         {

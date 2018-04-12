@@ -5,7 +5,6 @@
     if(isset($_GET['username'])) {
         
         $username = filter_input(INPUT_GET, "username", FILTER_SANITIZE_STRING);
-        echo "'" . $username . "'";
         
         $host = 'localhost';
         $db   = 'StillAlive';
@@ -26,7 +25,7 @@
         while ($row = $query->fetch())
         {
             foreach ($row as $key => $value) {
-                echo $key . ":" . $row[$key] . "\n";
+                echo $key . ":" . $row[$key] . PHP_EOL;
             }
         }
         

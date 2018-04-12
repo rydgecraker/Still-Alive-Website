@@ -26,81 +26,121 @@
 
         $query = $pdo->prepare('SELECT * FROM Players WHERE username = ?');
         $query->execute([$username]);
-        $exists = false;
+        $usernameExists = false;
         while($row = $query->fetch()) {
-            $exists = true;
+            $usernameExists = true;
             break;
         }
         
         if(isset($_GET['create'])) {
             $createEntryInTable = filter_input(INPUT_GET, "create", FILTER_SANITIZE_STRING);
             
-            if(!$exists){
-                $response = "";
-                switch($createEntryInTable) {
-                    case "Players":
+            $response = "";
+            switch($createEntryInTable) {
+                case "Players":
+                    if($usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME ALREADY EXISTS";
+                    } else {
                         if(isset($_GET['name']) && isset($_GET['experience']) && isset($_GET['freeSkills'])) {
-                            
-                            $name = filter_input(INPUT_GET, "name", FILTER_SANITIZE_STRING);
-                            $xp = filter_input(INPUT_GET, "experience", FILTER_SANITIZE_NUMBER_INT);
-                            $freeSkills = filter_input(INPUT_GET, "freeSkills", FILTER_SANITIZE_NUMBER_INT);
-                            
-                           try {
-                                $pdo->beginTransaction();
-                                $query = $pdo->prepare("INSERT INTO Players (username, name, startDate, experience, numEventsAttended, numNpcEvents, numPcEvents, isCheckedIn, freeSkills) VALUES (?, ?, ?, ?, 0, 0, 0, 0, ?)");
-                                $query->execute([$username, $name, date('Y-m-d'), $xp, $freeSkills]);
-                                $pdo->commit();
+
+                           //request should look like:
+                           //username=someusername&create=Players&name=somename&experience=0&freeSkills=0
+
+                           $name = filter_input(INPUT_GET, "name", FILTER_SANITIZE_STRING);
+                           $xp = filter_input(INPUT_GET, "experience", FILTER_SANITIZE_NUMBER_INT);
+                           $freeSkills = filter_input(INPUT_GET, "freeSkills", FILTER_SANITIZE_NUMBER_INT);
+
+                            try {
+                                 $pdo->beginTransaction();
+                                 $query = $pdo->prepare("INSERT INTO Players (username, name, startDate, experience, numEventsAttended, numNpcEvents, numPcEvents, isCheckedIn, freeSkills) VALUES (?, ?, ?, ?, 0, 0, 0, 0, ?)");
+                                 $query->execute([$username, $name, date('Y-m-d'), $xp, $freeSkills]);
+                                 $pdo->commit();
+                                 $response = "Sucessfully added a new player to the Players Database";
                             }catch (Exception $e){
                                 $pdo->rollback();
                                 throw $e;
                             } 
-                            
-                            $response = "Sucessfully added a new player to the Players Database";
-                            
                         } else {
                             $response = "Please Supply all of the necessary data for the $createEntryInTable table";
                         }
-                        break;
-                    case "Characters":
-                        
-                        break;
-                    case "CharacterSkills":
-                        
-                        break;
-                    case "EventAttendees":
-                        
-                        break;
-                    case "Events":
-                        
-                        break;
-                    case "HistoricalEvents":
-                        
-                        break;
-                    case "Items":
-                        
-                        break;
-                    case "PrimaryWeapons":
-                        
-                        break;
-                    case "Skills":
-                        
-                        break;
-                    case "SkillPrerequisites":
-                        
-                        break;
-                    case "SkillTypes":
-                        
-                        break;
-                    default:
-                        $JSON = "ERROR: COULD NOT FIND SPECIFIED TABLE";
-                        break;
-                }
-                
-                echo $response;
-                
-            } else {
-                echo "ERROR: USERNAME ALREADY EXISTS";
+                    }
+
+                    break;
+                case "Characters":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isset($_GET['name'])) {
+
+                            //request should look like:
+                            //username=someusername&create=Characters&name=somename&bio=someBio
+                            //bio is optional
+                            
+                            $name = filter_input(INPUT_GET, "name", FILTER_SANITIZE_STRING);
+                            $bio = "-None Given-";
+                            if(isset($_GET['bio'])) {
+                                $bio = filter_input(INPUT_GET, 'bio', FILTER_SANITIZE_STRING);
+                            }
+                            
+                            $playerID;
+                            $query = $pdo->prepare('SELECT * FROM Players WHERE username = ?');
+                            $query->execute([$username]);
+                            while($row = $query->fetch()) {
+                                $playerID = $row['playerID'];
+                                break;
+                            }
+                            
+                            try {
+                                 $pdo->beginTransaction();
+                                 $query = $pdo->prepare("INSERT INTO Characters (playerID, name, startDate, isAlive, numSkills, spentXp, freeSkillsSpent, infection, primaryWeaponID, bullets, megas, accus, millitaries, rockets, bio, bulletCasings, megaCasings, accuCasings, millitaryCasings, rocketCasings, techParts, mechParts, stone, wood, metal, cloth) " .
+                                         "VALUES (?, ?, ?, 1, 4, 0, 0, 0, 1, 0, 0, 0, 0, 0, ?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)");
+                                 $query->execute([$playerID, $name, date('Y-m-d'), $bio]);
+                                 $pdo->commit();
+                                 $response = "Sucessfully added a new character to the Characters Database with the playerID $playerID ($username)";
+                            }catch (Exception $e){
+                                $pdo->rollback();
+                                throw $e;
+                            } 
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $createEntryInTable table";
+                        }
+                    }
+                    break;
+                case "CharacterSkills":
+
+                    break;
+                case "EventAttendees":
+
+                    break;
+                case "Events":
+
+                    break;
+                case "HistoricalEvents":
+
+                    break;
+                case "Items":
+
+                    break;
+                case "PrimaryWeapons":
+
+                    break;
+                case "Skills":
+
+                    break;
+                case "SkillPrerequisites":
+
+                    break;
+                case "SkillTypes":
+
+                    break;
+                default:
+                    $JSON = "ERROR: COULD NOT FIND SPECIFIED TABLE";
+                    break;
             }
+
+            echo $response;
+
+        }
             
         } else if (isset($_GET['table'])){
             $table = filter_input(INPUT_GET, "table", FILTER_SANITIZE_STRING);
@@ -161,62 +201,6 @@
                 echo "ERROR: PLAYER DOES NOT EXIST";
             }
         }
-        
-        
-        
-        
-        
-        
-        
-
-        
-        
-                    /* soak in the passed variable or set our own */
-//            $number_of_posts = isset($_GET['num']) ? intval($_GET['num']) : 10; //10 is the default
-//            $format = strtolower($_GET['format']) == 'json' ? 'json' : 'xml'; //xml is the default
-//            $user_id = intval($_GET['user']); //no default
-//
-//            /* connect to the db */
-//            $link = mysql_connect('localhost/phpmyadmin','root','stillalive', "StillAlive") or die('Cannot connect to the DB');
-//
-//            /* grab the posts from the db */
-//            $query = "SELECT * FROM Players WHERE playerID = $user_id";
-//            $result = mysql_query($query,$link) or die('Errant query:  '.$query);
-//
-//            /* create one master array of the records */
-//            $posts = array();
-//            if(mysql_num_rows($result)) {
-//                    while($post = mysql_fetch_assoc($result)) {
-//                            $posts[] = array('post'=>$post);
-//                    }
-//            }
-//
-//            /* output in necessary format */
-//            if($format === 'json') {
-//                    header('Content-type: application/json');
-//                    echo json_encode(array('posts'=>$posts));
-//            }
-//            else {
-//                    header('Content-type: text/xml');
-//                    echo '<posts>';
-//                    foreach($posts as $index => $post) {
-//                            if(is_array($post)) {
-//                                    foreach($post as $key => $value) {
-//                                            echo '<',$key,'>';
-//                                            if(is_array($value)) {
-//                                                    foreach($value as $tag => $val) {
-//                                                            echo '<',$tag,'>',htmlentities($val),'</',$tag,'>';
-//                                                    }
-//                                            }
-//                                            echo '</',$key,'>';
-//                                    }
-//                            }
-//                    }
-//                    echo '</posts>';
-//            }
-//
-//            /* disconnect from the db */
-//            mysql_close($link);
             
     }
 ?> 

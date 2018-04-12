@@ -93,7 +93,7 @@
                                  $query = $pdo->prepare("INSERT INTO Players (username, name, startDate, experience, numEventsAttended, numNpcEvents, numPcEvents, isCheckedIn, freeSkills) VALUES (?, ?, ?, ?, 0, 0, 0, 0, ?)");
                                  $query->execute([$username, $name, date('Y-m-d'), $xp, $freeSkills]);
                                  $pdo->commit();
-                                 $response = "Sucessfully added a new player to the Players Database";
+                                 $response = "Sucessfully added a new player to the Players Table";
                             }catch (Exception $e){
                                 $pdo->rollback();
                                 throw $e;
@@ -129,7 +129,7 @@
                                          "VALUES (?, ?, ?, 1, 4, 0, 0, 0, 1, 0, 0, 0, 0, 0, ?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)");
                                  $query->execute([$playerID, $name, getCurrentDate(), $bio]);
                                  $pdo->commit();
-                                 $response = "Sucessfully added a new character to the Characters Database with the playerID $playerID ($username)";
+                                 $response = "Sucessfully added a new character to the Characters Table with the playerID $playerID ($username)";
                             }catch (Exception $e){
                                 $pdo->rollback();
                                 throw $e;
@@ -163,15 +163,13 @@
                                 $characterID = sanitizeInt('character');
                             }
                             
-                            
-                            
                             try {
                                  $pdo->beginTransaction();
                                  $query = $pdo->prepare("INSERT INTO EventAttendees (eventID, playerID, characterID, checkinTime) " .
                                          "VALUES (?, ?, ?, ?)");
                                  $query->execute([$eventID, $playerID, $characterID, getCurrentTime()]);
                                  $pdo->commit();
-                                 $response = "Sucessfully added a new EventAttendee to the EventAttendees Database with the playerID $playerID ($username)";
+                                 $response = "Sucessfully added a new EventAttendee to the EventAttendees Table with the playerID $playerID ($username)";
                             }catch (Exception $e){
                                 $pdo->rollback();
                                 throw $e;
@@ -203,7 +201,7 @@
                                          "VALUES (?, ?, ?, ?, 0, ?, ?)");
                                  $query->execute([getCurrentDate(), getTomorrowDate(), $start, $end, $name, $desc]);
                                  $pdo->commit();
-                                 $response = "Sucessfully added a new Event to the Events Database.";
+                                 $response = "Sucessfully added a new Event to the Events Table.";
                             }catch (Exception $e){
                                 $pdo->rollback();
                                 throw $e;
@@ -223,27 +221,27 @@
                             //username=someusername&create=HistoricalEvents&character=someCharID&event=someEventID&name=someName&desc=someDescription
                             //character and event are optional
                             
-                            $namer = sanitizeString('name');
-                            $descr = sanitizeString('desc');
-                            $playerrID = getPlayerID($pdo, $username);
+                            $name = sanitizeString('name');
+                            $desc = sanitizeString('desc');
+                            $playerID = getPlayerID($pdo, $username);
                             
-                            $characterrID = null;
+                            $characterID = null;
                             if(isGiven('character')) {
-                                $characterrID = sanitizeInt('character');
+                                $characterID = sanitizeInt('character');
                             }
                             
-                            $eventrID = null;
+                            $eventID = null;
                             if(isGiven('event')) {
-                                $eventrID = sanitizeInt('event');
+                                $eventID = sanitizeInt('event');
                             }
                             
                             try {
                                 $pdo->beginTransaction();
                                 $query = $pdo->prepare("INSERT INTO HistoricalEvents (playerID, characterID, eventID, name, description, date) " .
                                         "VALUES (?, ?, ?, ?, ?, ?)");
-                                $query->execute([$playerrID, $characterrID, $eventrID, $namer, $descr, getCurrentDate()]);
+                                $query->execute([$playerID, $characterID, $eventID, $name, $desc, getCurrentDate()]);
                                 $pdo->commit();
-                                $response = "Sucessfully added a new HistoricalEvent to the HistoricalEvents Database.";
+                                $response = "Sucessfully added a new HistoricalEvent to the HistoricalEvents Table.";
                                  
                             }catch (Exception $e){
                                 $pdo->rollback();
@@ -255,7 +253,34 @@
                     }
                     break;
                 case "Items":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isGiven('character') && isGiven('name') && isGiven('desc')) {
 
+                            //request should look like:
+                            //username=someusername&create=Items&character=someCharacterID&name=someItemName&desc=someDescription
+                            
+                            $name = sanitizeString('name');
+                            $desc = sanitizeString('desc');
+                            $characterID = sanitizeInt('character');
+                                                 
+                            try {
+                                $pdo->beginTransaction();
+                                $query = $pdo->prepare("INSERT INTO Items (characterID, name, description, date) " .
+                                        "VALUES (?, ?, ?, ?)");
+                                $query->execute([$characterID, $name, $desc, getCurrentDate()]);
+                                $pdo->commit();
+                                $response = "Sucessfully added a new Item to the Items Table.";
+                                 
+                            }catch (Exception $e){
+                                $pdo->rollback();
+                                throw $e;
+                            } 
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $createEntryInTable table";
+                        }
+                    }
                     break;
                 case "PrimaryWeapons":
 
@@ -276,8 +301,8 @@
 
             echo $response;
             
-        } else if (isset($_GET['table'])){
-            $table = filter_input(INPUT_GET, "table", FILTER_SANITIZE_STRING);
+        } else if (isGiven('table')){
+            $table = sanitizeString('table');
 
             if($usernameExists){
                 switch ($table) {

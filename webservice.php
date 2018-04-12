@@ -4,11 +4,7 @@
         /* require the user as the parameter */
     if(isset($_GET['username']) && intval($_GET['username'])) {
         
-        function sanitizeString($field) {
-            return filter_input(INPUT_POST, $field, FILTER_SANITIZE_STRING);
-        }
-        
-        $username = sanitizeSring('username');
+        $username = filter_input(INPUT_POST, "username", FILTER_SANITIZE_STRING);
         echo "'" . $username . "'";
         
         $host = 'localhost';

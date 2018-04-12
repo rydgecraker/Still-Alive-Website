@@ -139,8 +139,6 @@
             }
 
             echo $response;
-
-        }
             
         } else if (isset($_GET['table'])){
             $table = filter_input(INPUT_GET, "table", FILTER_SANITIZE_STRING);
@@ -200,7 +198,8 @@
             } else {
                 echo "ERROR: PLAYER DOES NOT EXIST";
             }
-        }
-            
+        } 
+    } else {
+        echo "ERROR: NO USERNAME SPECIFIED";
     }
 ?> 

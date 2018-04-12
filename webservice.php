@@ -242,8 +242,14 @@
                                  $query = $pdo->prepare("INSERT INTO HistoricalEvents (playerID, CharacterID, eventID, name, description) " .
                                          "VALUES (?, ?, ?, ?, ?)");
                                  $query->execute([$playerID, $characterID, $eventID, $name, $desc]);
-                                 $pdo->commit();
-                                 $response = "Sucessfully added a new HistoricalEvent to the HistoricalEvents Database.";
+                                 $result = $pdo->commit();
+                                 
+                                 if($result) {
+                                     $response = "Failed to add a new HistoricalEvent to the HistoricalEvents Database.";
+                                 } else {
+                                     $response = "Sucessfully added a new HistoricalEvent to the HistoricalEvents Database.";
+                                 }
+                                 
                             }catch (Exception $e){
                                 $pdo->rollback();
                                 throw $e;

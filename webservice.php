@@ -46,6 +46,7 @@
                             $freeSkills = filter_input(INPUT_GET, "freeSkills", FILTER_SANITIZE_NUMBER_INT);
                             
                            try {
+                                $pdo->beginTransaction();
                                 $query = $pdo->prepare("INSERT INTO Players (username, name, startDate, experience, numEventsAttended, numNpcEvents, numPcEvents, isCheckedIn, freeSkills) VALUES (?, ?, ?, ?, 0, 0, 0, 0, ?)");
                                 $query->execute([$username, $name, date('Y-m-d'), $xp, $freeSkills]);
                                 $pdo->commit();

@@ -214,7 +214,44 @@
                     }
                     break;
                 case "HistoricalEvents":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isGiven('name') && isGiven('desc')) {
 
+                            //request should look like:
+                            //username=someusername&create=HistoricalEvents&character=someCharID&event=someEventID&name=someName&desc=someDescription
+                            //character and event are optional
+                            
+                            $name = sanitizeString('name');
+                            $desc = sanitizeString('desc');
+                            $playerID = getPlayerID($pdo, $username);
+                            
+                            $characterID = null;
+                            if(isGiven('character')) {
+                                $characterID = sanitizeInt('character');
+                            }
+                            
+                            $eventID = null;
+                            if(isGiven('event')) {
+                                $eventID = sanitizeInt('event');
+                            }
+                            
+                            try {
+                                 $pdo->beginTransaction();
+                                 $query = $pdo->prepare("INSERT INTO HistoricalEvents (playerID, CharacterID, eventID, name, description) " .
+                                         "VALUES (?, ?, ?, ?, ?)");
+                                 $query->execute([$playerID, $characterID, $eventID, $name, $desc]);
+                                 $pdo->commit();
+                                 $response = "Sucessfully added a new HistoricalEvent to the HistoricalEvents Database.";
+                            }catch (Exception $e){
+                                $pdo->rollback();
+                                throw $e;
+                            } 
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $createEntryInTable table";
+                        }
+                    }
                     break;
                 case "Items":
 

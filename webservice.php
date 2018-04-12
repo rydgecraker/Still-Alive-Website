@@ -192,8 +192,8 @@
                             //times are in armyTime 00:00:00 - 23:59:59
                             //character is optional
                             
-                            $start = sanitizeString('startTime');
-                            $end = sanitizeString('endTime');
+                            $start = date('H:i:s', sanitizeString('startTime'));
+                            $end = date('H:i:s', sanitizeString('endTime'));
                             $name = sanitizeString('name');
                             $desc = sanitizeString('desc');
                             

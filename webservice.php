@@ -241,14 +241,9 @@
                                  $pdo->beginTransaction();
                                  $query = $pdo->prepare("INSERT INTO HistoricalEvents (playerID, characterID, eventID, name, description, date) " .
                                          "VALUES (?, ?, ?, ?, ?, ?)");
-                                 $query->execute([$playerID, $characterID, $eventID, $name, $desc, getCurrentDate()]);
-                                 $result = $pdo->commit();
-                                 
-                                 if($result) {
-                                     $response = "Failed to add a new HistoricalEvent to the HistoricalEvents Database.";
-                                 } else {
-                                     $response = "Sucessfully added a new HistoricalEvent to the HistoricalEvents Database.";
-                                 }
+                                 $query->execute([$playerID, $characterID, $eventID, $name, $desc, getCurrentDate()]) or die(print_r($query->errorInfo(), true));
+                                 $pdo->commit();
+                                 $response = "Sucessfully added a new HistoricalEvent to the HistoricalEvents Database.";
                                  
                             }catch (Exception $e){
                                 $pdo->rollback();

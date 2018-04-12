@@ -2,7 +2,7 @@
     ini_set('display_errors', 1); 
     error_reporting(-1);
         /* require the user as the parameter */
-    if(isset($_GET['username']) && intval($_GET['username'])) {
+    if(isset($_GET['username'])) {
         
         $username = filter_input(INPUT_GET, "username", FILTER_SANITIZE_STRING);
         echo "'" . $username . "'";

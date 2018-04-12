@@ -1,14 +1,3 @@
-<!DOCTYPE html>
-<!--
-GET RID OF TTHIS SHITTTTTTTT
--->
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>File IO Example in PHP</title>
-        <link href="css/styles.css" rel="stylesheet">
-    </head>
-    <body>
 <?php
     ini_set('display_errors', 1); 
     error_reporting(-1);
@@ -36,7 +25,7 @@ GET RID OF TTHIS SHITTTTTTTT
         
         $resultJSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
         
-        echo "<p>" . $resultJSON . "</p>";
+        echo $resultJSON;
         
         
                     /* soak in the passed variable or set our own */
@@ -88,5 +77,3 @@ GET RID OF TTHIS SHITTTTTTTT
             
     }
 ?> 
-        </body>
-</html>

@@ -239,7 +239,7 @@
                             
                             try {
                                  $pdo->beginTransaction();
-                                 $query = $pdo->prepare("INSERT INTO HistoricalEvents (playerID, CharacterID, eventID, name, description, date) " .
+                                 $query = $pdo->prepare("INSERT INTO HistoricalEvents (playerID, characterID, eventID, name, description, date) " .
                                          "VALUES (?, ?, ?, ?, ?, ?)");
                                  $query->execute([$playerID, $characterID, $eventID, $name, $desc, getCurrentDate()]);
                                  $result = $pdo->commit();

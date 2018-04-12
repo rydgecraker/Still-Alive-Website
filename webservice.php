@@ -32,7 +32,7 @@
             break;
         }
         
-        if(exists){
+        if($exists){
             switch ($table) {
                 case "Players":
                     $query = $pdo->query('SELECT * FROM Players');

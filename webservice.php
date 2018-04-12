@@ -25,7 +25,7 @@
         $JSON;
         
         $query = $pdo->prepare('SELECT * FROM Players WHERE playerID = ?');
-        $pdo->execute([$username]);
+        $query->execute([$username]);
         $exists = false;
         while($row = $query->fetch()) {
             $exists = true;

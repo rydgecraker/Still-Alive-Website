@@ -310,13 +310,91 @@
                     }
                     break;
                 case "Skills":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isGiven('xp') && isGiven('skillType') && isGiven('name') && isGiven('desc') && isGiven('flavor') && isGiven('minInfect')) {
 
+                            //request should look like:
+                            //username=someusername&create=Skills&xp=someXp&skillType=someSkillTypeID&name=someName&desc=someDescription&flavor=someFlavor&minInfect=someNumber
+                            $xp = sanitizeInt('xp');
+                            $skillTypeID = sanitizeInt('skillType');
+                            $name = sanitizeString('name');                            
+                            $desc = sanitizeString('desc');
+                            $flav = sanitizeString('flavor');
+                            $minInfect = sanitizeInt('minInfect');
+                                                 
+                            try {
+                                $pdo->beginTransaction();
+                                $query = $pdo->prepare("INSERT INTO Skills (xpCost, skillTypeID, name, description, flavor, minInfect) " .
+                                        "VALUES (?, ?, ?, ?, ?, ?)");
+                                $query->execute([$xp, $skillTypeID, $name, $desc, $flav, $minInfect]);
+                                $pdo->commit();
+                                $response = "Sucessfully added a new Skill to the Skills Table.";
+                                 
+                            }catch (Exception $e){
+                                $pdo->rollback();
+                                throw $e;
+                            } 
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $createEntryInTable table";
+                        }
+                    }
                     break;
                 case "SkillPrerequisites":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isGiven('base') && isGiven('prereq')) {
 
+                            //request should look like:
+                            //username=someusername&create=SkillPrerequisites&base=someSkillID&prereq=someSkillID
+                            $base = sanitizeInt('base');
+                            $prereq = sanitizeInt('prereq');
+                                                 
+                            try {
+                                $pdo->beginTransaction();
+                                $query = $pdo->prepare("INSERT INTO SkillPrerequisites (baseSkillID, prereqSkillID) " .
+                                        "VALUES (?, ?)");
+                                $query->execute([$base, $prereq]);
+                                $pdo->commit();
+                                $response = "Sucessfully added a new Skill Prereq to the SkillPrerequisites Table.";
+                                 
+                            }catch (Exception $e){
+                                $pdo->rollback();
+                                throw $e;
+                            } 
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $createEntryInTable table";
+                        }
+                    }
                     break;
                 case "SkillTypes":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isGiven('name')) {
 
+                            //request should look like:
+                            //username=someusername&create=SkillTypes&name=someSkillTypeName
+                            $name = sanitizeString('name');
+                                                 
+                            try {
+                                $pdo->beginTransaction();
+                                $query = $pdo->prepare("INSERT INTO SkillTypes (name) " .
+                                        "VALUES (?)");
+                                $query->execute([$name]);
+                                $pdo->commit();
+                                $response = "Sucessfully added a new Skill Type to the SkillTypes Table.";
+                                 
+                            }catch (Exception $e){
+                                $pdo->rollback();
+                                throw $e;
+                            } 
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $createEntryInTable table";
+                        }
+                    }
                     break;
                 default:
                     $JSON = "ERROR: COULD NOT FIND SPECIFIED TABLE";

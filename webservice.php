@@ -82,7 +82,7 @@
                         if(isGiven('name') && isGiven('experience') && isGiven('freeSkills')) {
 
                            //request should look like:
-                           //username=someusername&create=Players&name=somename&experience=0&freeSkills=0
+                           //username=asdf&create=Players&name=asdf&experience=#&freeSkills=#
 
                            $name = sanitizeString('name');
                            $xp = sanitizeInt('experience');
@@ -91,7 +91,7 @@
                             try {
                                  $pdo->beginTransaction();
                                  $query = $pdo->prepare("INSERT INTO Players (username, name, startDate, experience, numEventsAttended, numNpcEvents, numPcEvents, isCheckedIn, freeSkills) VALUES (?, ?, ?, ?, 0, 0, 0, 0, ?)");
-                                 $query->execute([$username, $name, date('Y-m-d'), $xp, $freeSkills]);
+                                 $query->execute([$username, $name, getCurrentDate(), $xp, $freeSkills]);
                                  $pdo->commit();
                                  $response = "Sucessfully added a new player to the Players Table";
                             }catch (Exception $e){
@@ -111,7 +111,7 @@
                         if(isGiven('name')) {
 
                             //request should look like:
-                            //username=someusername&create=Characters&name=somename&bio=someBio
+                            //username=asdf&create=Characters&name=asdf&bio=asdf
                             //bio is optional
                             
                             $name = sanitizeString('name');
@@ -143,7 +143,28 @@
                     if(!$usernameExists) {
                         $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
                     } else {
-                        $response = "ERROR: UNIMPLEMENTED UNTIL SKILLS ARE IN DATABASE";
+                        if(isGiven('charID') && isGiven('skillID')) {
+
+                            //request should look like:
+                            //username=asdf&create=CharacterSkills&charID=#&skillID=#
+                            
+                            $characterID = sanitizeInt('charID');
+                            $skillID = sanitizeInt('skillID');
+                            
+                            try {
+                                 $pdo->beginTransaction();
+                                 $query = $pdo->prepare("INSERT INTO CharacterSkills (characterID, skillID, dateAdded) " .
+                                         "VALUES (?, ?, ?)");
+                                 $query->execute([$characterID, $skillID, getCurrentDate()]);
+                                 $pdo->commit();
+                                 $response = "Sucessfully added a new Character Skill to the Character Skills Table with the characterID: $characterID";
+                            }catch (Exception $e){
+                                $pdo->rollback();
+                                throw $e;
+                            } 
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $createEntryInTable table";
+                        }
                     }
                     break;
                 case "EventAttendees":
@@ -153,7 +174,7 @@
                         if(isGiven('event')) {
 
                             //request should look like:
-                            //username=someusername&create=EventAttendees&event=eventIDnum&character=someCharacterID
+                            //username=asdf&create=EventAttendees&event=#&character=#
                             //character is optional
                             
                             $eventID = sanitizeInt('event');
@@ -186,9 +207,8 @@
                         if(isGiven('startTime') && isGiven('endTime') && isGiven('name') && isGiven('desc')) {
 
                             //request should look like:
-                            //username=someusername&create=Events&startTime=someStartTime&endTime=someEndTime&name=someEventName&desc=someDescription
+                            //username=asdf&create=Events&startTime=asdf&endTime=asdf&name=asdf&desc=asdf
                             //times are in armyTime 00:00:00 - 23:59:59
-                            //character is optional
                             
                             $start = date('H:i:s', strtotime(sanitizeString('startTime')));
                             $end = date('H:i:s', strtotime(sanitizeString('endTime')));
@@ -218,7 +238,7 @@
                         if(isGiven('name') && isGiven('desc')) {
 
                             //request should look like:
-                            //username=someusername&create=HistoricalEvents&character=someCharID&event=someEventID&name=someName&desc=someDescription
+                            //username=asdf&create=HistoricalEvents&character=#&event=#&name=asdf&desc=asdf
                             //character and event are optional
                             
                             $name = sanitizeString('name');
@@ -259,7 +279,7 @@
                         if(isGiven('character') && isGiven('name') && isGiven('desc')) {
 
                             //request should look like:
-                            //username=someusername&create=Items&character=someCharacterID&name=someItemName&desc=someDescription
+                            //username=asdf&create=Items&character=#&name=asdf&desc=asdf
                             
                             $name = sanitizeString('name');
                             $desc = sanitizeString('desc');
@@ -289,7 +309,7 @@
                         if(isGiven('desc')) {
 
                             //request should look like:
-                            //username=someusername&create=PrimaryWeapons&desc=someDescription
+                            //username=asdf&create=PrimaryWeapons&desc=asdf
                             $desc = sanitizeString('desc');
                                                  
                             try {
@@ -316,7 +336,7 @@
                         if(isGiven('xp') && isGiven('skillType') && isGiven('name') && isGiven('desc') && isGiven('flavor') && isGiven('minInfect')) {
 
                             //request should look like:
-                            //username=someusername&create=Skills&xp=someXp&skillType=someSkillTypeID&name=someName&desc=someDescription&flavor=someFlavor&minInfect=someNumber
+                            //username=asdf&create=Skills&xp=#&skillType=#&name=asdf&desc=asdf&flavor=asdf&minInfect=#
                             $xp = sanitizeInt('xp');
                             $skillTypeID = sanitizeInt('skillType');
                             $name = sanitizeString('name');                            
@@ -348,7 +368,7 @@
                         if(isGiven('base') && isGiven('prereq')) {
 
                             //request should look like:
-                            //username=someusername&create=SkillPrerequisites&base=someSkillID&prereq=someSkillID
+                            //username=asdf&create=SkillPrerequisites&base=#&prereq=#
                             $base = sanitizeInt('base');
                             $prereq = sanitizeInt('prereq');
                                                  
@@ -376,7 +396,7 @@
                         if(isGiven('name')) {
 
                             //request should look like:
-                            //username=someusername&create=SkillTypes&name=someSkillTypeName
+                            //username=asdf&create=SkillTypes&name=asdf
                             $name = sanitizeString('name');
                                                  
                             try {
@@ -403,9 +423,9 @@
 
             echo $response;
             
-        } else if (isGiven('table')){
-            $table = sanitizeString('table');
-
+        } else if (isGiven('fetch')){
+            $table = sanitizeString('fetch');
+            $JSON;
             if($usernameExists){
                 switch ($table) {
                     case "Players":
@@ -461,8 +481,414 @@
             } else {
                 echo "ERROR: PLAYER DOES NOT EXIST";
             }
+        } else if(isGiven('update')){
+            
+            $updateEntryInTable = sanitizeString('update');
+            
+            $response = "";
+            switch($updateEntryInTable) {
+                case "Players":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isGiven('name') && isGiven('experience') && isGiven('numEvents') && isGiven('numNpc') && isGiven('numPc') && isGiven('checkedIn') && isGiven('freeSkills')) {
+
+                           //request should look like:
+                           //username=asdf&update=Players&name=asdf&experience=#&numEvents=#&numNpc=#&numPc=#&checkedIn=#&freeSkills=#
+                           $playerID = getPlayerID($pdo, $username);
+                           $name = sanitizeString('name');
+                           $xp = sanitizeInt('experience');
+                           $numEvents = sanitizeInt('numEvents');
+                           $numNpcEvents = sanitizeInt('numNpc');
+                           $numPcEvents = sanitizeInt('numPc');
+                           $checkedIn = (sanitizeInt('checkedIn') == 1);
+                           $freeSkills = sanitizeInt('freeSkills');
+                           
+
+                            try {
+                                 $pdo->beginTransaction();
+                                 if($checkedIn) {
+                                    $query = $pdo->prepare("UPDATE Players SET name = ?, experience = ?, numEventsAttended = ?, numNpcEvents = ?, numPcEvents = ?, isCheckedIn = 1, lastCheckIn = ?, freeSkills = ? WHERE playerID = ?");
+                                    $query->execute([$name, $xp, $numEvents, $numNpcEvents, $numPcEvents, getCurrentDate(), $freeSkills, $playerID]);
+                                 } else {
+                                    $query = $pdo->prepare("UPDATE Players SET name = ?, experience = ?, numEventsAttended = ?, numNpcEvents = ?, numPcEvents = ?, isCheckedIn = 0, freeSkills = ? WHERE playerID = ?");
+                                    $query->execute([$name, $xp, $numEvents, $numNpcEvents, $numPcEvents, $freeSkills, $playerID]);
+                                 }
+                                 $pdo->commit();
+                                 $response = "Sucessfully updated $username's entry in the Players table";
+                            }catch (Exception $e){
+                                $pdo->rollback();
+                                throw $e;
+                            } 
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $updateEntryInTable table";
+                        }
+                    }
+
+                    break;
+                case "Characters":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isGiven('charID') && isGiven('name') && isGiven('isAlive') && isGiven('skills') && isGiven('spentXp') && isGiven('spentFS') && isGiven('infect') && isGiven('primWeap') && isGiven('bull') && isGiven('mega') && isGiven('accu') && isGiven('milli') && isGiven('rocket') && isGiven('bio') && isGiven('bullCas') && isGiven('megaCas') && isGiven('accuCas') && isGiven('rocketCas') && isGiven('milliCas') && isGiven('tech') && isGiven('mech') && isGiven('stone') && isGiven('wood') && isGiven('metal') && isGiven('cloth')) {
+
+                            //request should look like:
+                            //username=asdf&update=Characters&charID=#&name=asdf&isAlive=#&skills=#&spentXp=#&spentFS=#&infect=#&primWeap=#&bull=#&mega=#&accu=&milli=&rocket=#&bio=asdf&bullCas=#&megaCas=#&accuCas=#&rocketCas=#&milliCas=#&tech=#&mech=#&stone=#&wood=#&metal=#&cloth=#
+                            $characterID = sanitizeInt('charID');
+                            $name = sanitizeString('name');
+                            $isAlive = (sanitizeInt('isAlive') == 1);
+                            $numSkills = sanitizeInt('skills');
+                            $spentXp = sanitizeInt('spentXp');
+                            $spentFreeSkills = sanitizeInt('spentFS');
+                            $infection = sanitizeInt('infect');
+                            $primaryWeaponID = sanitizeInt('primWeap');
+                            
+                            $bullets = sanitizeInt('bull');
+                            $megas = sanitizeInt('mega');
+                            $rockets = sanitizeInt('rocket');
+                            $accus = sanitizeInt('accu');
+                            $millis = sanitizeInt('milli');
+                            
+                            $bio = sanitizeString('bio');
+                            
+                            $bulletCasings = sanitizeInt('bullCas');
+                            $megaCasings = sanitizeInt('megaCas');
+                            $rocketCasings = sanitizeInt('rocketCas');
+                            $accuCasings = sanitizeInt('accuCas');
+                            $milliCasings = sanitizeInt('milliCas');
+                            
+                            $tech = sanitizeInt('tech');
+                            $mech = sanitizeInt('mech');
+                            $stone = sanitizeInt('stone');
+                            $wood = sanitizeInt('wood');
+                            $metal = sanitizeInt('metal');
+                            $cloth = sanitizeInt('cloth');
+                            
+                            
+                            try {
+                                 $pdo->beginTransaction();
+                                 if($isAlive) {
+                                    $query = $pdo->prepare("UPDATE Characters SET name = ?, isAlive = 1, numSkills = ?, spentXp = ?, freeSkillsSpent = ?, infection = ?, primaryWeaponID = ?, bullets = ?, megas = ?, accus = ?, millitaries = ?, rockets = ?, bio = ?, bulletCasings = ?,  megaCasings = ?,  accuCasings = ?, millitaryCasings = ?, rocketCasings = ?, techParts = ?, mechParts = ?, stone = ?, wood = ?, metal = ?, cloth = ? WHERE characterID = ?");
+                                    $query->execute([$name, $numSkills, $spentXp, $spentFreeSkills, $infection, $primaryWeaponID, $bullets, $megas, $accus, $millis, $rockets, $bio, $bulletCasings, $megaCasings, $accuCasings, $milliCasings, $rocketCasings, $tech, $mech, $stone, $wood, $metal, $cloth, $characterID]);
+                                 } else {
+                                    $query = $pdo->prepare("UPDATE Characters SET name = ?, isAlive = 0, deathDate = ?, numSkills = ?, spentXp = ?, freeSkillsSpent = ?, infection = ?, primaryWeaponID = ?, bullets = ?, megas = ?, accus = ?, millitaries = ?, rockets = ?, bio = ?, bulletCasings = ?,  megaCasings = ?,  accuCasings = ?, millitaryCasings = ?, rocketCasings = ?, techParts = ?, mechParts = ?, stone = ?, wood = ?, metal = ?, cloth = ? WHERE characterID = ?");
+                                    $query->execute([$name, getCurrentDate(), $numSkills, $spentXp, $spentFreeSkills, $infection, $primaryWeaponID, $bullets, $megas, $accus, $millis, $rockets, $bio, $bulletCasings, $megaCasings, $accuCasings, $milliCasings, $rocketCasings, $tech, $mech, $stone, $wood, $metal, $cloth, $characterID]);
+                                 }
+                                 $pdo->commit();
+                                 $response = "Sucessfully updated $name's entry in the Characters table";
+                            }catch (Exception $e){
+                                $pdo->rollback();
+                                throw $e;
+                            }
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $updateEntryInTable table";
+                        }
+                    }
+                    break;
+                case "CharacterSkills":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT UPDATE THE CHARACTER SKILLS TABLE";
+                    }
+                    break;
+                case "EventAttendees":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT UPDATE THE EVENT ATTENDEES TABLE";
+                    }
+                    break;
+                case "Events":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isGiven('eventID') && isGiven('eventRunning') && isGiven('name') && isGiven('desc')) {
+
+                            //request should look like:
+                            //username=asdf&update=Events&eventID=#&eventRunning=#&name=asdf&desc=asdf
+                            
+                            $eventID = sanitizeInt('eventID');
+                            $eventRunning = (sanitizeInt('eventRunning') == 1);
+                            $name = sanitizeString('name');
+                            $desc = sanitizeString('desc');
+                            
+                            try {
+                                 $pdo->beginTransaction();
+                                 if($eventRunning) {
+                                    $query = $pdo->prepare("UPDATE Events SET startDate = ?, startTime = ?, eventRunning = 1, name = ?, description = ? WHERE eventID = ?");
+                                 } else {
+                                    $query = $pdo->prepare("UPDATE Events SET endDate = ?, endTime = ?, eventRunning = 0, name = ?, description = ? WHERE eventID = ?");
+                                 }
+                                 $query->execute([getCurrentDate(), getCurrentTime(), $name, $desc, $eventID]);
+                                 $pdo->commit();
+                                 $response = "Sucessfully updated $name's entry in the Characters table";
+                            }catch (Exception $e){
+                                $pdo->rollback();
+                                throw $e;
+                            }
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $updateEntryInTable table";
+                        }
+                    }
+                    break;
+                case "HistoricalEvents":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT UPDATE THE HISTORICAL EVENTS TABLE";
+                    }
+                    break;
+                case "Items":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT UPDATE THE ITEMS TABLE";
+                    }
+                    break;
+                case "PrimaryWeapons":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT UPDATE THE PRIMARY WEAPONS TABLE";
+                    }
+                    break;
+                case "Skills":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isGiven('skillID') && isGiven('xp') && isGiven('skillType') && isGiven('name') && isGiven('desc') && isGiven('flav') && isGiven('minInfect')) {
+
+                            //request should look like:
+                            //username=asdf&update=Skills&skillID=#&xp=#&skillType=#&name=asdf&desc=asdf&flav=asdf&minInfect=#
+                            
+                            $skillID = sanitizeInt('skillID');
+                            $xp = sanitizeInt('xp');
+                            $skillType = sanitizeInt('skillType');
+                            $name = sanitizeString('name');
+                            $desc = sanitizeString('desc');
+                            $flav = sanitizeString('flav');
+                            $infect = sanitizeInt('minInfect');
+                            
+                            try {
+                                 $pdo->beginTransaction();
+                                 $query = $pdo->prepare("UPDATE Skills SET xpCost = ?, skillTypeID = ?, name = ?, desc = ?, flavor = ?, minInfect = ? WHERE skillID = ?");
+                                 $query->execute([$xp, $skillType, $name, $desc, $flav, $infect, $skillID]);
+                                 $pdo->commit();
+                                 $response = "Sucessfully updated $name's entry in the Skills table";
+                            }catch (Exception $e){
+                                $pdo->rollback();
+                                throw $e;
+                            }
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $updateEntryInTable table";
+                        }
+                    }
+                    break;
+                case "SkillPrerequisites":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isGiven('base') && isGiven('prereq')) {
+
+                            //request should look like:
+                            //username=asdf&update=SkillPrerequisites&oldBase=#&oldPrereq=#&base=#&prereq=#
+                            $oldBase = sanitizeInt('oldBase');
+                            $oldPrereq = sanitizeInt('oldPrereq');
+                            $base = sanitizeInt('base');
+                            $prereq = sanitizeInt('prereq');
+                                                 
+                            try {
+                                 $pdo->beginTransaction();
+                                 $query = $pdo->prepare("UPDATE SkillPrerequisites SET baseSkillID = ?, prereqSkillID = ? WHERE baseSkillID = ? AND prereqSkillID = ?");
+                                 $query->execute([$base, $prereq, $oldBase, $oldPrereq]);
+                                 $pdo->commit();
+                                 $response = "Sucessfully updated skill ID: $oldBase's entry in the SkillPrerequisites table";
+                            }catch (Exception $e){
+                                $pdo->rollback();
+                                throw $e;
+                            }
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $updateEntryInTable table";
+                        }
+                    }
+                    break;
+                case "SkillTypes":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT UPDATE THE SKILL TYPES TABLE";
+                    }
+                    break;
+                default:
+                    $JSON = "ERROR: COULD NOT FIND SPECIFIED TABLE";
+                    break;
+            }
+
+            echo $response;
+            
+        } else if(isGiven('delete')) {
+            $table = sanitizeString('delete');
+            $response = "";
+            switch ($table) {
+                case "Players":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        //request should look like:
+                        //username=asdf&delete=Players
+
+                        $playerID = getPlayerID($pdo, $username);
+
+                        try {
+                             $pdo->beginTransaction();
+                             $query = $pdo->prepare("DELETE FROM Players WHERE playerID = ?");
+                             $query->execute([$playerID]);
+                             $pdo->commit();
+                             $response = "Sucessfully deleted $username from the Players table";
+                        }catch (Exception $e){
+                            $pdo->rollback();
+                            throw $e;
+                        }
+                    }
+                    break;
+                case "Characters":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isGiven('charID')) {
+
+                            //request should look like:
+                            //username=asdf&delete=Characters&charID=#
+
+                            $charID = sanitizeInt('charID');
+
+                            try {
+                                $pdo->beginTransaction();
+                                $query = $pdo->prepare("DELETE FROM Characters WHERE characterID = ?");
+                                $query->execute([$charID]);
+                                $pdo->commit();
+                                $response = "Sucessfully deleted character with ID: $charID from the Characters table";
+                           }catch (Exception $e){
+                               $pdo->rollback();
+                               throw $e;
+                           }
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $table table";
+                        }
+                    }
+                    break;
+                case "CharacterSkills":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isGiven('charID') && isGiven('skillID')) {
+
+                            //request should look like:
+                            //username=asdf&delete=CharacterSkills&charID=#&skillID=#
+
+                            $charID = sanitizeInt('charID');
+                            $skillID = sanitizeInt('skillID');
+
+                            try {
+                                $pdo->beginTransaction();
+                                $query = $pdo->prepare("DELETE FROM CharacterSkills WHERE characterID = ? AND skillID = ?");
+                                $query->execute([$charID, $skillID]);
+                                $pdo->commit();
+                                $response = "Sucessfully deleted character skill ($skillID) from character with ID: $charID from the CharacterSkills table";
+                           }catch (Exception $e){
+                               $pdo->rollback();
+                               throw $e;
+                           }
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $table table";
+                        }
+                    }
+                    break;
+                case "EventAttendees":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isGiven('eventID')) {
+
+                            //request should look like:
+                            //username=asdf&delete=EventAttendees&eventID=#
+
+                            $eventID = sanitizeInt('eventID');
+                            $playerID = getPlayerID($pdo, $username);
+
+                            try {
+                                $pdo->beginTransaction();
+                                $query = $pdo->prepare("DELETE FROM EventAttendees WHERE eventID = ? AND playerID = ?");
+                                $query->execute([$eventID, $playerID]);
+                                $pdo->commit();
+                                $response = "Sucessfully deleted Event Attendance for $username for the event with ID $eventID in the EventAttendees table";
+                           }catch (Exception $e){
+                               $pdo->rollback();
+                               throw $e;
+                           }
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $table table";
+                        }
+                    }
+                    break;
+                case "Events":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT DELETE FROM THE EVENTS TABLE";
+                    }
+                    break;
+                case "HistoricalEvents":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT DELETE FROM THE HISTORICAL EVENTS TABLE";
+                    }
+                    break;
+                case "Items":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT DELETE FROM THE ITEMS TABLE";
+                    }
+                    break;
+                case "PrimaryWeapons":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT DELETE FROM THE PRIMARY WEAPONS TABLE";
+                    }
+                    break;
+                case "Skills":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT DELETE FROM THE SKILLS TABLE";
+                    }
+                    break;
+                case "SkillPrerequisites":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT DELETE FROM THE SKILL PREREQUISITES TABLE";
+                    }
+                    break;
+                case "SkillTypes":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT DELETE FROM THE SKILL TYPES TABLE";
+                    }
+                    break;
+                default:
+                    $JSON = "ERROR: COULD NOT FIND SPECIFIED TABLE";
+                    break;
+            }
+            echo $response;
+        } else {
+            echo "ERROR: NO COMMAND GIVEN";
         } 
     } else {
         echo "ERROR: NO USERNAME SPECIFIED";
     }
-?> 

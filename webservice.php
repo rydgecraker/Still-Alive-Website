@@ -417,10 +417,10 @@
                     }
                     break;
                 default:
-                    $JSON = "ERROR: COULD NOT FIND SPECIFIED TABLE";
+                    $response = "ERROR: COULD NOT FIND SPECIFIED TABLE";
                     break;
             }
-
+            header('Content-Type: text/plain');
             echo $response;
             
         } else if (isGiven('fetch')){
@@ -430,55 +430,68 @@
                 switch ($table) {
                     case "Players":
                         $query = $pdo->query('SELECT * FROM Players');
+                        header('Content-Type: application/json');
                         $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
                         break;
                     case "Characters":
                         $query = $pdo->query('SELECT * FROM Characters');
+                        header('Content-Type: application/json');
                         $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
                         break;
                     case "CharacterSkills":
                         $query = $pdo->query('SELECT * FROM CharacterSkills');
+                        header('Content-Type: application/json');
                         $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
                         break;
                     case "EventAttendees":
                         $query = $pdo->query('SELECT * FROM EventAttendees');
+                        header('Content-Type: application/json');
                         $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
                         break;
                     case "Events":
                         $query = $pdo->query('SELECT * FROM Events');
+                        header('Content-Type: application/json');
                         $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
                         break;
                     case "HistoricalEvents":
                         $query = $pdo->query('SELECT * FROM HistoricalEvents');
+                        header('Content-Type: application/json');
                         $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
                         break;
                     case "Items":
                         $query = $pdo->query('SELECT * FROM Items');
+                        header('Content-Type: application/json');
                         $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
                         break;
                     case "PrimaryWeapons":
                         $query = $pdo->query('SELECT * FROM PrimaryWeapons');
+                        header('Content-Type: application/json');
                         $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
                         break;
                     case "Skills":
                         $query = $pdo->query('SELECT * FROM SkillPrerequisites');
+                        header('Content-Type: application/json');
                         $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
                         break;
                     case "SkillPrerequisites":
                         $query = $pdo->query('SELECT * FROM Skills');
+                        header('Content-Type: application/json');
                         $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
                         break;
                     case "SkillTypes":
                         $query = $pdo->query('SELECT * FROM SkillTypes');
+                        header('Content-Type: application/json');
                         $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
                         break;
                     default:
+                        header('Content-Type: text/plain');
                         $JSON = "ERROR: COULD NOT FIND SPECIFIED TABLE";
                         break;
                 }
 
                  echo $JSON;
             } else {
+                header('Content-Type: text/plain');
                 echo "ERROR: PLAYER DOES NOT EXIST";
             }
         } else if(isGiven('update')){
@@ -724,7 +737,7 @@
                     $JSON = "ERROR: COULD NOT FIND SPECIFIED TABLE";
                     break;
             }
-
+            header('Content-Type: text/plain');
             echo $response;
             
         } else if(isGiven('delete')) {
@@ -885,10 +898,13 @@
                     $JSON = "ERROR: COULD NOT FIND SPECIFIED TABLE";
                     break;
             }
+            header('Content-Type: text/plain');
             echo $response;
         } else {
+            header('Content-Type: text/plain');
             echo "ERROR: NO COMMAND GIVEN";
         } 
     } else {
+        header('Content-Type: text/plain');
         echo "ERROR: NO USERNAME SPECIFIED";
     }

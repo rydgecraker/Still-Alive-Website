@@ -78,10 +78,11 @@ nav ul {
 
 #bodyspace {
     padding: 0;
-    margin: 0px 0px 0px 10%;
+    margin: 0 0 0 10%;
     background-color: rgba(160, 130, 130, 0.75);
     width: 80%;
     border-radius: 3em;
+    
 }
 
 #homepageIntro {
@@ -96,7 +97,28 @@ nav ul {
     text-transform: capitalize;
 }
 
-#bodyspace footer {
+#homepageIntro a:visited, #homepageIntro a:link {
+    text-transform: uppercase;
+    color: black;
+    text-decoration: underline;
+    font-weight: 300;
+}
+
+footer {
+    background-color: rgba(80, 10, 10, 0.7);
+    border-bottom-left-radius: 5em;
+    border-bottom-right-radius: 5em;
+}
+
+footer {
     text-align: center;
+    font-weight: 800;
+    font-size: 150%;
+    color: #888888;
+}
+
+footer a:link, footer a:visited {
+    color: #888888;
+    font-size: 110%;
 }
 

@@ -72,6 +72,11 @@ nav ul {
     margin: 0;
 }
 
+#underConstruction {
+    padding: 0;
+    margin: 0;
+}
+
 #homepageContent {
     background-color: rgba(80, 10, 10, 0.7);
 }

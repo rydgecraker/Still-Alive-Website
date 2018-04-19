@@ -469,12 +469,12 @@
                         $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
                         break;
                     case "Skills":
-                        $query = $pdo->query('SELECT * FROM SkillPrerequisites');
+                        $query = $pdo->query('SELECT * FROM Skills');
                         header('Content-Type: application/json');
                         $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
                         break;
                     case "SkillPrerequisites":
-                        $query = $pdo->query('SELECT * FROM Skills');
+                        $query = $pdo->query('SELECT * FROM SkillPrerequisites');
                         header('Content-Type: application/json');
                         $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
                         break;

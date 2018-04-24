@@ -360,22 +360,23 @@
                     if(!$usernameExists) {
                         $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
                     } else {
-                        if(isGiven('xp') && isGiven('skillType') && isGiven('name') && isGiven('desc') && isGiven('flavor') && isGiven('minInfect')) {
+                        if(isGiven('xp') && isGiven('skillType') && isGiven('name') && isGiven('desc') && isGiven('flavor') && isGiven('minInfect') && isGiven('skillCategory')) {
 
                             //request should look like:
-                            //username=asdf&create=Skills&xp=#&skillType=#&name=asdf&desc=asdf&flavor=asdf&minInfect=#
+                            //username=asdf&create=Skills&xp=#&skillType=#&name=asdf&desc=asdf&flavor=asdf&minInfect=#&skillCategory=#
                             $xp = sanitizeInt('xp');
                             $skillTypeID = sanitizeInt('skillType');
                             $name = sanitizeString('name');                            
                             $desc = sanitizeString('desc');
                             $flav = sanitizeString('flavor');
                             $minInfect = sanitizeInt('minInfect');
+                            $skillCategory = sanitizeInt('skillCateogry');
                                                  
                             try {
                                 $pdo->beginTransaction();
-                                $query = $pdo->prepare("INSERT INTO Skills (xpCost, skillTypeID, name, description, flavor, minInfect) " .
-                                        "VALUES (?, ?, ?, ?, ?, ?)");
-                                $query->execute([$xp, $skillTypeID, $name, $desc, $flav, $minInfect]);
+                                $query = $pdo->prepare("INSERT INTO Skills (xpCost, skillTypeID, name, description, flavor, minInfect, skillCategoryID) " .
+                                        "VALUES (?, ?, ?, ?, ?, ?, ?)");
+                                $query->execute([$xp, $skillTypeID, $name, $desc, $flav, $minInfect, $skillCategory]);
                                 $pdo->commit();
                                 $response = "Sucessfully added a new Skill to the Skills Table.";
                                  
@@ -709,10 +710,10 @@
                     if(!$usernameExists) {
                         $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
                     } else {
-                        if(isGiven('skillID') && isGiven('xp') && isGiven('skillType') && isGiven('name') && isGiven('desc') && isGiven('flav') && isGiven('minInfect')) {
+                        if(isGiven('skillID') && isGiven('xp') && isGiven('skillType') && isGiven('name') && isGiven('desc') && isGiven('flav') && isGiven('minInfect') && isGiven('skillCategory')) {
 
                             //request should look like:
-                            //username=asdf&update=Skills&skillID=#&xp=#&skillType=#&name=asdf&desc=asdf&flav=asdf&minInfect=#
+                            //username=asdf&update=Skills&skillID=#&xp=#&skillType=#&name=asdf&desc=asdf&flav=asdf&minInfect=#&skillCategory=#
                             
                             $skillID = sanitizeInt('skillID');
                             $xp = sanitizeInt('xp');
@@ -721,11 +722,12 @@
                             $desc = sanitizeString('desc');
                             $flav = sanitizeString('flav');
                             $infect = sanitizeInt('minInfect');
+                            $skillCategory = sanitizeInt('skillCategory');
                             
                             try {
                                  $pdo->beginTransaction();
-                                 $query = $pdo->prepare("UPDATE Skills SET xpCost = ?, skillTypeID = ?, name = ?, desc = ?, flavor = ?, minInfect = ? WHERE skillID = ?");
-                                 $query->execute([$xp, $skillType, $name, $desc, $flav, $infect, $skillID]);
+                                 $query = $pdo->prepare("UPDATE Skills SET xpCost = ?, skillTypeID = ?, name = ?, desc = ?, flavor = ?, minInfect = ?, skillCategoryID = ? WHERE skillID = ?");
+                                 $query->execute([$xp, $skillType, $name, $desc, $flav, $infect, $skillCategory, $skillID]);
                                  $pdo->commit();
                                  $response = "Sucessfully updated $name's entry in the Skills table";
                             }catch (Exception $e){

@@ -75,6 +75,33 @@
             
             $response = "";
             switch($createEntryInTable) {
+                case "SkillCategories":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isGiven('name')) {
+
+                            //request should look like:
+                            //username=asdf&create=SkillCategories&name=#
+                            
+                            $name = sanitizeInt('name');
+                            
+                            try {
+                                 $pdo->beginTransaction();
+                                 $query = $pdo->prepare("INSERT INTO SkillCategories (name) " .
+                                         "VALUES (?)");
+                                 $query->execute([$name]);
+                                 $pdo->commit();
+                                 $response = "Sucessfully added a new Skill Category to the Skill Categories Table with the name: $name";
+                            }catch (Exception $e){
+                                $pdo->rollback();
+                                throw $e;
+                            } 
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $createEntryInTable table";
+                        }
+                    }
+                    break;
                 case "Players":
                     if($usernameExists) {
                         $response = "ERROR: PLAYER USERNAME ALREADY EXISTS";
@@ -428,6 +455,11 @@
             $JSON;
             if($usernameExists){
                 switch ($table) {
+                    case "SkillCategories":
+                        $query = $pdo->query('SELECT * FROM SkillCategories');
+                        header('Content-Type: application/json');
+                        $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+                        break;
                     case "Players":
                         $query = $pdo->query('SELECT * FROM Players');
                         header('Content-Type: application/json');
@@ -500,6 +532,13 @@
             
             $response = "";
             switch($updateEntryInTable) {
+                case "SkillCategories":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT UPDATE THE SKILL CATEGORIES TABLE";
+                    }
+                    break;
                 case "Players":
                     if(!$usernameExists) {
                         $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
@@ -744,6 +783,13 @@
             $table = sanitizeString('delete');
             $response = "";
             switch ($table) {
+                case "SkillCategories":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT DELETE FROM THE SKILL CATEGORIES TABLE";
+                    }
+                    break;
                 case "Players":
                     if(!$usernameExists) {
                         $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";

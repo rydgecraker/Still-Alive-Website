@@ -120,7 +120,7 @@
                                  $query = $pdo->prepare("INSERT INTO Players (username, name, startDate, experience, numEventsAttended, numNpcEvents, numPcEvents, isCheckedIn, freeSkills) VALUES (?, ?, ?, ?, 0, 0, 0, 0, ?)");
                                  $query->execute([$username, $name, getCurrentDate(), $xp, $freeSkills]);
                                  $pdo->commit();
-                                 $response = "Sucessfully added a new player to the Players Table";
+                                 $response = "Sucessfully added a new player to the Players Table with ID=" . $pdo->lastInsertId();
                             }catch (Exception $e){
                                 $pdo->rollback();
                                 throw $e;

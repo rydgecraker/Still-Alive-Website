@@ -2,7 +2,6 @@
     ini_set('display_errors', 1); 
     error_reporting(-1);
         /* require the user as the parameter */
-    
     function sanitizeString($input){
         return filter_input(INPUT_GET, $input, FILTER_SANITIZE_STRING);
     }
@@ -92,9 +91,10 @@
                                          "VALUES (?)");
                                  $query->execute([$name]);
                                  $pdo->commit();
+                                 
                                  $response = "Sucessfully added a new Skill Category to the Skill Categories Table with the name: $name";
                             }catch (Exception $e){
-                                $pdo->rollback();
+                                $pdo->rollBack();
                                 throw $e;
                             } 
                         } else {
@@ -123,7 +123,7 @@
                                  $pdo->commit();
                                  $response = "Sucessfully added a new player to the Players Table with ID=$playerID";
                             }catch (Exception $e){
-                                $pdo->rollback();
+                                $pdo->rollBack();
                                 throw $e;
                             } 
                         } else {
@@ -159,7 +159,7 @@
                                  $pdo->commit();
                                  $response = "Sucessfully added a new character to the Characters Table with the playerID $playerID ($username)";
                             }catch (Exception $e){
-                                $pdo->rollback();
+                                $pdo->rollBack();
                                 throw $e;
                             } 
                         } else {
@@ -187,7 +187,7 @@
                                  $pdo->commit();
                                  $response = "Sucessfully added a new Character Skill to the Character Skills Table with the characterID: $characterID";
                             }catch (Exception $e){
-                                $pdo->rollback();
+                                $pdo->rollBack();
                                 throw $e;
                             } 
                         } else {
@@ -220,7 +220,7 @@
                                  $pdo->commit();
                                  $response = "Sucessfully added a new EventAttendee to the EventAttendees Table with the playerID $playerID ($username)";
                             }catch (Exception $e){
-                                $pdo->rollback();
+                                $pdo->rollBack();
                                 throw $e;
                             } 
                         } else {
@@ -251,7 +251,7 @@
                                  $pdo->commit();
                                  $response = "Sucessfully added a new Event to the Events Table.";
                             }catch (Exception $e){
-                                $pdo->rollback();
+                                $pdo->rollBack();
                                 throw $e;
                             } 
                         } else {
@@ -292,7 +292,7 @@
                                 $response = "Sucessfully added a new HistoricalEvent to the HistoricalEvents Table.";
                                  
                             }catch (Exception $e){
-                                $pdo->rollback();
+                                $pdo->rollBack();
                                 throw $e;
                             } 
                         } else {
@@ -322,7 +322,7 @@
                                 $response = "Sucessfully added a new Item to the Items Table.";
                                  
                             }catch (Exception $e){
-                                $pdo->rollback();
+                                $pdo->rollBack();
                                 throw $e;
                             } 
                         } else {
@@ -349,7 +349,7 @@
                                 $response = "Sucessfully added a new Primary Weapon to the PrimaryWeapons Table.";
                                  
                             }catch (Exception $e){
-                                $pdo->rollback();
+                                $pdo->rollBack();
                                 throw $e;
                             } 
                         } else {
@@ -382,7 +382,7 @@
                                 $response = "Sucessfully added a new Skill to the Skills Table.";
                                  
                             }catch (Exception $e){
-                                $pdo->rollback();
+                                $pdo->rollBack();
                                 throw $e;
                             } 
                         } else {
@@ -410,7 +410,7 @@
                                 $response = "Sucessfully added a new Skill Prereq to the SkillPrerequisites Table.";
                                  
                             }catch (Exception $e){
-                                $pdo->rollback();
+                                $pdo->rollBack();
                                 throw $e;
                             } 
                         } else {
@@ -437,7 +437,7 @@
                                 $response = "Sucessfully added a new Skill Type to the SkillTypes Table.";
                                  
                             }catch (Exception $e){
-                                $pdo->rollback();
+                                $pdo->rollBack();
                                 throw $e;
                             } 
                         } else {
@@ -571,7 +571,7 @@
                                  $pdo->commit();
                                  $response = "Sucessfully updated $username's entry in the Players table";
                             }catch (Exception $e){
-                                $pdo->rollback();
+                                $pdo->rollBack();
                                 throw $e;
                             } 
                         } else {
@@ -631,7 +631,7 @@
                                  $pdo->commit();
                                  $response = "Sucessfully updated $name's entry in the Characters table";
                             }catch (Exception $e){
-                                $pdo->rollback();
+                                $pdo->rollBack();
                                 throw $e;
                             }
                         } else {
@@ -678,7 +678,7 @@
                                  $pdo->commit();
                                  $response = "Sucessfully updated $name's entry in the Characters table";
                             }catch (Exception $e){
-                                $pdo->rollback();
+                                $pdo->rollBack();
                                 throw $e;
                             }
                         } else {
@@ -732,7 +732,7 @@
                                  $pdo->commit();
                                  $response = "Sucessfully updated $name's entry in the Skills table";
                             }catch (Exception $e){
-                                $pdo->rollback();
+                                $pdo->rollBack();
                                 throw $e;
                             }
                         } else {
@@ -760,7 +760,7 @@
                                  $pdo->commit();
                                  $response = "Sucessfully updated skill ID: $oldBase's entry in the SkillPrerequisites table";
                             }catch (Exception $e){
-                                $pdo->rollback();
+                                $pdo->rollBack();
                                 throw $e;
                             }
                         } else {
@@ -809,7 +809,7 @@
                              $pdo->commit();
                              $response = "Sucessfully deleted $username from the Players table";
                         }catch (Exception $e){
-                            $pdo->rollback();
+                            $pdo->rollBack();
                             throw $e;
                         }
                     }
@@ -832,7 +832,7 @@
                                 $pdo->commit();
                                 $response = "Sucessfully deleted character with ID: $charID from the Characters table";
                            }catch (Exception $e){
-                               $pdo->rollback();
+                               $pdo->rollBack();
                                throw $e;
                            }
                         } else {
@@ -859,7 +859,7 @@
                                 $pdo->commit();
                                 $response = "Sucessfully deleted character skill ($skillID) from character with ID: $charID from the CharacterSkills table";
                            }catch (Exception $e){
-                               $pdo->rollback();
+                               $pdo->rollBack();
                                throw $e;
                            }
                         } else {
@@ -886,7 +886,7 @@
                                 $pdo->commit();
                                 $response = "Sucessfully deleted Event Attendance for $username for the event with ID $eventID in the EventAttendees table";
                            }catch (Exception $e){
-                               $pdo->rollback();
+                               $pdo->rollBack();
                                throw $e;
                            }
                         } else {

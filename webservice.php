@@ -156,8 +156,9 @@
                                  $query = $pdo->prepare("INSERT INTO Characters (playerID, name, startDate, isAlive, numSkills, spentXp, freeSkillsSpent, infection, primaryWeaponID, bullets, megas, accus, millitaries, rockets, bio, bulletCasings, megaCasings, accuCasings, millitaryCasings, rocketCasings, techParts, mechParts, stone, wood, metal, cloth) " .
                                          "VALUES (?, ?, ?, 1, 4, 0, 0, 0, 1, 0, 0, 0, 0, 0, ?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)");
                                  $query->execute([$playerID, $name, getCurrentDate(), $bio]);
+                                 $charID = $pdo->lastInsertId();
                                  $pdo->commit();
-                                 $response = "Sucessfully added a new character to the Characters Table with the playerID $playerID ($username)";
+                                 $response = "Sucessfully added a new character to the Characters Table with the playerID $playerID ($username) at the ID=$charID";
                             }catch (Exception $e){
                                 $pdo->rollBack();
                                 throw $e;

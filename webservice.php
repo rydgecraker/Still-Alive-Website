@@ -111,7 +111,6 @@
                 echo "ACCESS GRANTED";
             } else {
                 header('Content-Type: text/plain');
-                echo "ERROR: INCORRECT CPIDASY";
                 echo "$pidasy vs $value";
             }
             

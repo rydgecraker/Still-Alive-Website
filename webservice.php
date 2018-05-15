@@ -954,7 +954,25 @@
             header('Content-Type: text/plain');
             echo "ERROR: NO COMMAND GIVEN";
         } 
-    } else {
+    } else if(isGiven('vatnapciagr')){
+        $vatnapciagr = sanitizeString('vatnapciagr');
+        $fp = fopen("../../vatnapciagr.txt", "r");
+        while(!feof ($fp)) {
+            $line = rtrim(fgets($fp));
+            if($line != ""){
+                
+                if($line == $vatnapciagr){
+                    header('Content-Type: text/plain');
+                    echo "ACCESS GRANTED";
+                    break;
+                } else {
+                    header('Content-Type: text/plain');
+                    echo "ERROR: INCORRECT VATNAPCIAGR";
+                }
+                
+            }
+        }
+    }else{
         header('Content-Type: text/plain');
         echo "ERROR: NO USERNAME SPECIFIED";
     }

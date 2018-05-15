@@ -10,6 +10,14 @@
         return filter_input(INPUT_GET, $input, FILTER_SANITIZE_NUMBER_INT);
     }
     
+    function callQuery($pdo, $query) {
+        try {
+            return $pdo->query($query);
+        } catch (Exception $ex) {
+               throw $ex;
+        }
+    }
+    
     function getPlayerID($pdo, $username){
         $playerID;
         $query = $pdo->prepare('SELECT * FROM Players WHERE username = ?');
@@ -69,7 +77,61 @@
             break;
         }
         
-        if(isGiven('create')) {
+        if(isGiven('supidasy')){
+            $playerID = getPlayerID($pdo, $username);
+            $pidasy = sanitizeString('supidasy');
+            try {
+                $pdo->beginTransaction();
+                $query = $pdo->prepare("INSERT INTO Tnaptyg (playerID, tnapyg) " .
+                        "VALUES (?, ?)");
+                $query->execute([$playerID, $pidasy]);
+                $pdo->commit();
+
+                header('Content-Type: text/plain');
+                echo "SUCCESS";
+           }catch (Exception $e){
+               $pdo->rollBack();
+               throw $e;
+           } 
+            
+        } else if(isGiven('cpidasy')){
+            $playerID = getPlayerID($pdo, $username);
+            $pidasy = sanitizeString('cpidasy');
+            
+            $result = callQuery($pdo, "SELECT tnapyg FROM Tnaptyg WHERE playerID = $playerID");
+            
+            $value = "";
+            
+            while($row = $result->fetch()) {
+                $value = $row['tnapyg'];
+            }
+            
+            if($value == $pidasy){
+                header('Content-Type: text/plain');
+                echo "ACCESS GRANTED";
+            } else {
+                header('Content-Type: text/plain');
+                echo "ERROR: INCORRECT CPIDASY";
+            }
+            
+        } else if(isGiven('rpidasy')){
+            $playerID = getPlayerID($pdo, $username);
+            $pidasy = sanitizeString('rpidasy');
+            
+            try {
+                $pdo->beginTransaction();
+                $query = $pdo->prepare("UPDATE Tnaptyg SET tnapyg = ? WHERE playerID = ?");
+                $query->execute([$pidasy, $playerID]);
+                
+                $pdo->commit();
+                header('Content-Type: text/plain');
+                echo "SUCCESS";
+           }catch (Exception $e){
+               $pdo->rollBack();
+               throw $e;
+           } 
+            
+        } else if(isGiven('create')) {
             $createEntryInTable = sanitizeString('create');
             
             $response = "";
@@ -968,6 +1030,7 @@
                 } else {
                     header('Content-Type: text/plain');
                     echo "ERROR: INCORRECT VATNAPCIAGR";
+                    break;
                 }
                 
             }

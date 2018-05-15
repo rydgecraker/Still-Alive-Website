@@ -112,6 +112,7 @@
             } else {
                 header('Content-Type: text/plain');
                 echo "ERROR: INCORRECT CPIDASY";
+                echo "$pidasy vs $value";
             }
             
         } else if(isGiven('rpidasy')){

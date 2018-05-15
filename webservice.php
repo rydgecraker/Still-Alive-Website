@@ -111,7 +111,7 @@
                 echo "ACCESS GRANTED";
             } else {
                 header('Content-Type: text/plain');
-                echo "$pidasy vs $value";
+                echo "ERROR: WITH PIDASY";
             }
             
         } else if(isGiven('rpidasy')){

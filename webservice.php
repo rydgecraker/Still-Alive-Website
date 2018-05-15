@@ -520,6 +520,11 @@
             $JSON;
             if($usernameExists){
                 switch ($table) {
+                    case "Tnaptyg":
+                        $query = $pdo->query('SELECT * FROM Tnaptyg');
+                        header('Content-Type: application/json');
+                        $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+                        break;
                     case "SkillCategories":
                         $query = $pdo->query('SELECT * FROM SkillCategories');
                         header('Content-Type: application/json');

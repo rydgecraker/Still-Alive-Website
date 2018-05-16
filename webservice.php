@@ -1068,6 +1068,29 @@
             }
         }
         fclose($fp);
+    } else if(isGiven('setIntrigue')){
+        $intrigue = sanitizeString('setIntrigue');
+        list($il1, $il2, $il3) = explode("~~~", $intrigue);
+        $sepidkwtct = sanitizeString('sepidkwtct');
+        $myfile = fopen("../../playerIntrigue.txt", "w") or die("ERROR: unable to open file!");
+        fwrite($myfile, $il1."\n");
+        fwrite($myfile, $il2."\n");
+        fwrite($myfile, $il3);
+        fclose($myfile);
+        header('Content-Type: text/plain');
+        echo "SUCCESS!";
+        
+    } else if(isGiven('fetchIntrigue')){
+        header('Content-Type: text/plain');
+        $fp = fopen("../../playerIntrigue.txt", "r");
+        while(!feof ($fp)) {
+            $line = rtrim(fgets($fp));
+            if($line != ""){
+                echo $line;
+            }
+        }
+        fclose($fp);
+        
     } else {
         header('Content-Type: text/plain');
         echo "ERROR: NO USERNAME SPECIFIED";

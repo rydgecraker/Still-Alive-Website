@@ -1040,6 +1040,7 @@
                 
             }
         }
+        fclose($fp);
     }else if(isGiven('sepidkwtct')){
         $sepidkwtct = sanitizeString('sepidkwtct');
         $myfile = fopen("../../eventPassword.txt", "w") or die("ERROR: unable to open file!");
@@ -1047,6 +1048,26 @@
         fclose($myfile);
         header('Content-Type: text/plain');
         echo "SUCCESS!";
+    } else if(isGiven('cepidkwtct')){
+        $cepidkwtct = sanitizeString('cepidkwtct');
+        $fp = fopen("../../eventPassword.txt", "r");
+        while(!feof ($fp)) {
+            $line = rtrim(fgets($fp));
+            if($line != ""){
+                
+                if($line == $cepidkwtct){
+                    header('Content-Type: text/plain');
+                    echo "ACCESS GRANTED";
+                    break;
+                } else {
+                    header('Content-Type: text/plain');
+                    echo "ERROR: INCORRECT CEPIDKWTCT";
+                    break;
+                }
+                
+            }
+        }
+        fclose($fp);
     } else {
         header('Content-Type: text/plain');
         echo "ERROR: NO USERNAME SPECIFIED";

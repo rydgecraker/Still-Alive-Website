@@ -1086,7 +1086,7 @@
         while(!feof ($fp)) {
             $line = rtrim(fgets($fp));
             if($line != ""){
-                echo $line;
+                echo $line . "\n";
             }
         }
         fclose($fp);

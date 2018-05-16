@@ -1040,7 +1040,14 @@
                 
             }
         }
-    }else{
+    }else if(isGiven('sepidkwtct')){
+        $sepidkwtct = sanitizeString('sepidkwtct');
+        $myfile = fopen("../../eventPassword.txt", "w") or die("ERROR: unable to open file!");
+        fwrite($myfile, $sepidkwtct);
+        fclose($myfile);
+        header('Content-Type: text/plain');
+        echo "SUCCESS!";
+    } else {
         header('Content-Type: text/plain');
         echo "ERROR: NO USERNAME SPECIFIED";
     }

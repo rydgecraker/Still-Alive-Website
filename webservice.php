@@ -42,13 +42,34 @@
         return date('H:i:s', time());
     }
     
-
-    
     function isGiven($input) {
         return isset($_GET[$input]);
     }
     
+    function getDbUpdateStatusNum(){
+        header('Content-Type: text/plain');
+        $updateNum = 0;
+        $fp = fopen("../../dbStatus.txt", "r");
+        while(!feof ($fp)) {
+            $line = rtrim(fgets($fp));
+            if($line != ""){
+                $updateNum = doubleval($line);
+            }
+        }
+        fclose($fp);
+        return $updateNum;
+    }
+    
+    function writeDbUpdateStatusNum($updateNum) {
+        $myfile = fopen("../../dbStatus.txt", "w") or die("ERROR: unable to open file!");
+        fwrite($myfile, $updateNum."");
+        fclose($myfile);
+        header('Content-Type: text/plain');
+    }
+    
     if(isGiven('username')) {
+        
+        $updateStatusNum = getDbUpdateStatusNum();
         
         $username = sanitizeString('username');
         
@@ -136,6 +157,12 @@
             
             $response = "";
             switch($createEntryInTable) {
+                case "HandbookEntry":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT ADD TO THE HANDBOOK ENTRY TABLE";
+                    }
                 case "SkillCategories":
                     if(!$usernameExists) {
                         $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
@@ -513,6 +540,8 @@
                     break;
             }
             header('Content-Type: text/plain');
+            $updateStatusNum += 1;
+            writeDbUpdateStatusNum($updateStatusNum);
             echo $response;
             
         } else if (isGiven('fetch')){
@@ -520,6 +549,11 @@
             $JSON;
             if($usernameExists){
                 switch ($table) {
+                    case "HandbookEntry":
+                        $query = $pdo->query('SELECT * FROM HandbookEntry');
+                        header('Content-Type: application/json');
+                        $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+                        break;
                     case "Tnaptyg":
                         $query = $pdo->query('SELECT * FROM Tnaptyg');
                         header('Content-Type: application/json');
@@ -590,7 +624,6 @@
                         $JSON = "ERROR: COULD NOT FIND SPECIFIED TABLE";
                         break;
                 }
-
                  echo $JSON;
             } else {
                 header('Content-Type: text/plain');
@@ -602,6 +635,13 @@
             
             $response = "";
             switch($updateEntryInTable) {
+                case "HandbookEntry":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT UPDATE THE HANDBOOK ENTRY TABLE";
+                    }
+                    break;
                 case "SkillCategories":
                     if(!$usernameExists) {
                         $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
@@ -848,12 +888,21 @@
                     break;
             }
             header('Content-Type: text/plain');
+            $updateStatusNum += 1;
+            writeDbUpdateStatusNum($updateStatusNum);
             echo $response;
             
         } else if(isGiven('delete')) {
             $table = sanitizeString('delete');
             $response = "";
             switch ($table) {
+                case "HandbookENtry":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT DELETE FROM THE HANDBOOK ENTRY TABLE";
+                    }
+                    break;
                 case "SkillCategories":
                     if(!$usernameExists) {
                         $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
@@ -1016,6 +1065,8 @@
                     break;
             }
             header('Content-Type: text/plain');
+            $updateStatusNum += 1;
+            writeDbUpdateStatusNum($updateStatusNum);
             echo $response;
         } else {
             header('Content-Type: text/plain');
@@ -1091,6 +1142,8 @@
         }
         fclose($fp);
         
+    } else if(isGiven('fetchUpdateStatusNum')) {
+        echo getDbUpdateStatusNum();
     } else {
         header('Content-Type: text/plain');
         echo "ERROR: NO USERNAME SPECIFIED";

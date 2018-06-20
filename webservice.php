@@ -73,7 +73,7 @@
         while(!feof ($fp)) {
             $line = rtrim(fgets($fp));
             if($line != ""){
-                $response += line;
+                $response += $line;
             }
         }
         fclose($fp);

@@ -67,16 +67,29 @@
         header('Content-Type: text/plain');
     }
     
+    function readFromDbCredsFolder($filename) {
+        $fp = fopen("../../databaseCred/" . $filename, "r");
+        $response = "";
+        while(!feof ($fp)) {
+            $line = rtrim(fgets($fp));
+            if($line != ""){
+                $response += line;
+            }
+        }
+        fclose($fp);
+        return $response;
+    }
+    
     if(isGiven('username')) {
         
         $updateStatusNum = getDbUpdateStatusNum();
         
         $username = sanitizeString('username');
         
-        $host = 'localhost';
-        $db   = 'StillAlive';
-        $user = 'root';
-        $pass = 'stillalive';
+        $host = readFromDbCredsFolder("host.txt");
+        $db   = readFromDbCredsFolder("db.txt");
+        $user = readFromDbCredsFolder("user.txt");
+        $pass = readFromDbCredsFolder("pass.txt");
         $charset = 'utf8mb4';
 
 
@@ -157,6 +170,156 @@
             
             $response = "";
             switch($createEntryInTable) {
+                case "CraftableObjectMaterials":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isGiven('objectID') && isGiven('materialID') && isGiven('amount')){
+                            //request should look like:
+                            //username=asdf&create=CraftableObjectMaterials&objectID=#&materialID=#&amount=#
+                            
+                            $objectID = sanitizeInt('objectID');
+                            $materialID = sanitizeInt('materialID');
+                            $amount = sanitizeInt('amount');
+                            
+                            
+                            try {
+                                 $pdo->beginTransaction();
+                                 $query = $pdo->prepare("INSERT INTO CraftableObjectMaterials (objectID, materialID, amount) " .
+                                         "VALUES (?, ?, ?)");
+                                 $query->execute([$objectID, $materialID, $amount]);
+                                 $pdo->commit();
+                                 
+                                 $response = "Sucessfully added a new Craftable Object Material.";
+                            }catch (Exception $e){
+                                $pdo->rollBack();
+                                throw $e;
+                            } 
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $createEntryInTable table";
+                        }
+                    }
+                case "CraftableObjectRequiredSkills":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isGiven('objectID') && isGiven('skillID')){
+                            //request should look like:
+                            //username=asdf&create=CraftableObjectRequiredSkills&objectID=#&skillID=#
+                            
+                            $objectID = sanitizeInt('objectID');
+                            $skillID = sanitizeInt('skillID');
+                            
+                            
+                            try {
+                                 $pdo->beginTransaction();
+                                 $query = $pdo->prepare("INSERT INTO CraftableObjectRequiredSkills (objectID, skillID) " .
+                                         "VALUES (?, ?, ?)");
+                                 $query->execute([$objectID, $skillID]);
+                                 $pdo->commit();
+                                 
+                                 $response = "Sucessfully added a new Craftable Object SkillID.";
+                            }catch (Exception $e){
+                                $pdo->rollBack();
+                                throw $e;
+                            } 
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $createEntryInTable table";
+                        }
+                    }
+                case "CraftableObjects":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isGiven('name') && isGiven('description') && isGiven('clothAmount') && isGiven('metalAmount') && isGiven('woodAmount') && isGiven('stoneAmount') && isGiven('techPartsAmount') && isGiven('mechPartsAmount') && isGiven('buildTimeMinutes') && isGiven('fortificationLevel')){
+                            //request should look like:
+                            //username=asdf&create=CraftableObjects&name=asdf&description=asdf&clothAmount=#&metalAmount=#&woodAmount=#&stoneAmount=#&techPartsAmount=#&mechPartsAmount=#&buildTimeMinutes=#&fortificationLevel=#
+                            
+                            $name = sanitizeString('name');
+                            $desc = sanitizeString('description');
+                            $cloth = sanitizeInt('clothAmount');
+                            $metal = sanitizeInt('metalAmount');
+                            $wood = sanitizeInt('woodAmount');
+                            $stone = sanitizeInt('stoneAmount');
+                            $tech = sanitizeInt('techPartsAmount');
+                            $mech = sanitizeInt('mechPartsAmount');
+                            $buildTime = sanitizeInt('buildTimeMinutes');
+                            $fortLvl = sanitizeInt('fortificationLevel');
+                            
+                            
+                            try {
+                                 $pdo->beginTransaction();
+                                 $query = $pdo->prepare("INSERT INTO CraftableObjects (name, description, clothAmount, metalAmount, woodAmount, stoneAmount, techPartsAmount, mechPartsAmount, buildTimeMinutes, fortificationLevel) " .
+                                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                 $query->execute([$name, $desc, $cloth, $metal, $wood, $stone, $tech, $mech, $buildTime, $fortLvl]);
+                                 $pdo->commit();
+                                 
+                                 $response = "Sucessfully added a new Craftable Object.";
+                            }catch (Exception $e){
+                                $pdo->rollBack();
+                                throw $e;
+                            } 
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $createEntryInTable table";
+                        }
+                    }
+                case "CraftableObjectsAsMaterials":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isGiven('objectToBeCrafted') && isGiven('objectMaterial') && isGiven('amount')){
+                            //request should look like:
+                            //username=asdf&create=CraftableObjectsAsMaterials&objectToBeCrafted=#&objectMaterial=#&amount=#
+                            
+                            $objToBeCrafted = sanitizeInt('objectToBeCrafted');
+                            $objMat = sanitizeInt('objectMaterial');
+                            $amount = sanitizeInt('amount');
+                            
+                            
+                            try {
+                                 $pdo->beginTransaction();
+                                 $query = $pdo->prepare("INSERT INTO CraftableObjectsAsMaterials (objectToBeCrafted, objectMaterial, amount) " .
+                                         "VALUES (?, ?, ?)");
+                                 $query->execute([$objToBeCrafted, $objMat, $amount]);
+                                 $pdo->commit();
+                                 
+                                 $response = "Sucessfully added a new Craftable Object as a Material.";
+                            }catch (Exception $e){
+                                $pdo->rollBack();
+                                throw $e;
+                            } 
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $createEntryInTable table";
+                        }
+                    }
+                case "Materials":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isGiven('name') && isGiven('description')){
+                            //request should look like:
+                            //username=asdf&create=Materials&name=asdf&description=asdf
+                            
+                            $name = sanitizeString('name');
+                            $desc = sanitizeString('description');
+                            
+                            
+                            try {
+                                 $pdo->beginTransaction();
+                                 $query = $pdo->prepare("INSERT INTO Materials (name, description) " .
+                                         "VALUES (?, ?)");
+                                 $query->execute([$name, $desc]);
+                                 $pdo->commit();
+                                 
+                                 $response = "Sucessfully added a new Craftable Object as a Material.";
+                            }catch (Exception $e){
+                                $pdo->rollBack();
+                                throw $e;
+                            } 
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $createEntryInTable table";
+                        }
+                    }
                 case "HandbookEntry":
                     if(!$usernameExists) {
                         $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
@@ -172,7 +335,7 @@
                             //request should look like:
                             //username=asdf&create=SkillCategories&name=#
                             
-                            $name = sanitizeInt('name');
+                            $name = sanitizeString('name');
                             
                             try {
                                  $pdo->beginTransaction();
@@ -549,6 +712,31 @@
             $JSON;
             if($usernameExists){
                 switch ($table) {
+                    case "CraftableObjectMaterials":
+                        $query = $pdo->query('SELECT * FROM CraftableObjectMaterials');
+                        header('Content-Type: application/json');
+                        $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+                        break;
+                    case "CraftableObjectRequiredSkills":
+                        $query = $pdo->query('SELECT * FROM CraftableObjectRequiredSkills');
+                        header('Content-Type: application/json');
+                        $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+                        break;
+                    case "CraftableObjects":
+                        $query = $pdo->query('SELECT * FROM CraftableObjects');
+                        header('Content-Type: application/json');
+                        $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+                        break;
+                    case "CraftableObjectsAsMaterials":
+                        $query = $pdo->query('SELECT * FROM CraftableObjectsAsMaterials');
+                        header('Content-Type: application/json');
+                        $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+                        break;
+                    case "Materials":
+                        $query = $pdo->query('SELECT * FROM Materials');
+                        header('Content-Type: application/json');
+                        $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+                        break;
                     case "HandbookEntry":
                         $query = $pdo->query('SELECT * FROM HandbookEntry');
                         header('Content-Type: application/json');
@@ -635,6 +823,41 @@
             
             $response = "";
             switch($updateEntryInTable) {
+                case "CraftableObjectMaterials":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT UPDATE THE $updateEntryInTable TABLE";
+                    }
+                    break;
+                case "CraftableObjectRequiredSkills":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT UPDATE THE $updateEntryInTable TABLE";
+                    }
+                    break;
+                case "CraftableObjects":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT UPDATE THE $updateEntryInTable TABLE";
+                    }
+                    break;
+                case "CraftableObjectsAsMaterials":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT UPDATE THE $updateEntryInTable TABLE";
+                    }
+                    break;
+                case "Materials":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT UPDATE THE $updateEntryInTable TABLE";
+                    }
+                    break;
                 case "HandbookEntry":
                     if(!$usernameExists) {
                         $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
@@ -896,6 +1119,41 @@
             $table = sanitizeString('delete');
             $response = "";
             switch ($table) {
+                case "CraftableObjectMaterials":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT DELETE FROM THE $table TABLE";
+                    }
+                    break;
+                case "CraftableObjectRequiredSkills":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT DELETE FROM THE $table TABLE";
+                    }
+                    break;
+                case "CraftableObjects":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT DELETE FROM THE $table TABLE";
+                    }
+                    break;
+                case "CraftableObjectsAsMaterials":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT DELETE FROM THE $table TABLE";
+                    }
+                    break;
+                case "Materials":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT DELETE FROM THE $table TABLE";
+                    }
+                    break;
                 case "HandbookENtry":
                     if(!$usernameExists) {
                         $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
@@ -1115,7 +1373,6 @@
                     echo "ERROR: INCORRECT CEPIDKWTCT";
                     break;
                 }
-                
             }
         }
         fclose($fp);
@@ -1144,7 +1401,27 @@
         
     } else if(isGiven('fetchUpdateStatusNum')) {
         echo getDbUpdateStatusNum();
-    } else {
+        
+    } else if(isGiven('createPlayerPass')) {
+        $cpp = sanitizeString('createPlayerPass');
+        $fp = fopen("../../appPassword.txt", "r");
+        while(!feof ($fp)) {
+            $line = rtrim(fgets($fp));
+            if($line != ""){
+                
+                if($line == $cpp){
+                    header('Content-Type: text/plain');
+                    echo "ACCESS GRANTED";
+                    break;
+                } else {
+                    header('Content-Type: text/plain');
+                    echo "ERROR: INCORRECT createPlayerPass";
+                    break;
+                }
+            }
+        }
+        fclose($fp);
+    }else {
         header('Content-Type: text/plain');
         echo "ERROR: NO USERNAME SPECIFIED";
     }

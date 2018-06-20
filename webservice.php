@@ -69,7 +69,7 @@
     
     function readFromDbCredsFolder($filename) {
         $fp = fopen("../../databaseCred/" . $filename, "r");
-        echo $filename . "\n\n";
+        $response = "";
         while(!feof ($fp)) {
             $line = rtrim(fgets($fp));
             if($line != ""){
@@ -91,9 +91,6 @@
         $user = readFromDbCredsFolder("user.txt");
         $pass = readFromDbCredsFolder("pass.txt");
         $charset = 'utf8mb4';
-
-        echo "HOST=" . $host . "\nDB=" . $db . "\nUSER=" . $user . "\nPASS=" . $pass;
-        
 
         $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
         $opt = [

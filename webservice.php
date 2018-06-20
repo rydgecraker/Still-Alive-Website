@@ -92,6 +92,8 @@
         $pass = readFromDbCredsFolder("pass.txt");
         $charset = 'utf8mb4';
 
+        echo "HOST=" . $host . "\nDB=" . $db . "\nUSER=" . $user . "\nPASS=" . $pass;
+        
 
         $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
         $opt = [

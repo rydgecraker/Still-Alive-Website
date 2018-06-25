@@ -169,6 +169,63 @@
             
             $response = "";
             switch($createEntryInTable) {
+                case "AwardWinners":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isGiven('eventID') && isGiven('awardID') && isGiven('notes')){
+                            //request should look like:
+                            //username=asdf&create=Awards&name=asdf&description=asdf
+                            
+                            $eventID = sanitizeInt('eventID');
+                            $awardID = sanitizeInt('awardID');
+                            $notes = sanitizeString('notes');
+                            $playerID = getPlayerID($pdo, $username);
+                            
+                            try {
+                                 $pdo->beginTransaction();
+                                 $query = $pdo->prepare("INSERT INTO AwardWinners (eventID, playerID, awardID, notes) " .
+                                         "VALUES (?, ?, ?, ?)");
+                                 $query->execute([$eventID, $playerID, $awardID, $notes]);
+                                 $pdo->commit();
+                                 
+                                 $response = "Sucessfully added a new Award Winner.";
+                            }catch (Exception $e){
+                                $pdo->rollBack();
+                                throw $e;
+                            } 
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $createEntryInTable table";
+                        }
+                    }
+                case "Awards":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        if(isGiven('name') && isGiven('description')){
+                            //request should look like:
+                            //username=asdf&create=Awards&name=asdf&description=asdf
+                            
+                            $name = sanitizeString('name');
+                            $desc = sanitizeString('description');
+                            
+                            
+                            try {
+                                 $pdo->beginTransaction();
+                                 $query = $pdo->prepare("INSERT INTO Awards (name, description) " .
+                                         "VALUES (?, ?)");
+                                 $query->execute([$name, $desc]);
+                                 $pdo->commit();
+                                 
+                                 $response = "Sucessfully added a new Award Type.";
+                            }catch (Exception $e){
+                                $pdo->rollBack();
+                                throw $e;
+                            } 
+                        } else {
+                            $response = "Please Supply all of the necessary data for the $createEntryInTable table";
+                        }
+                    }
                 case "CraftableObjectMaterials":
                     if(!$usernameExists) {
                         $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
@@ -711,6 +768,16 @@
             $JSON;
             if($usernameExists){
                 switch ($table) {
+                    case "AwardWinners":
+                        $query = $pdo->query('SELECT * FROM AwardWinners');
+                        header('Content-Type: application/json');
+                        $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+                        break;
+                    case "Awards":
+                        $query = $pdo->query('SELECT * FROM Awards');
+                        header('Content-Type: application/json');
+                        $JSON = json_encode($query->fetchAll(PDO::FETCH_ASSOC));
+                        break;
                     case "CraftableObjectMaterials":
                         $query = $pdo->query('SELECT * FROM CraftableObjectMaterials');
                         header('Content-Type: application/json');
@@ -822,6 +889,20 @@
             
             $response = "";
             switch($updateEntryInTable) {
+                case "AwardWinners":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT UPDATE THE $updateEntryInTable TABLE";
+                    }
+                    break;
+                case "Awards":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT UPDATE THE $updateEntryInTable TABLE";
+                    }
+                    break;
                 case "CraftableObjectMaterials":
                     if(!$usernameExists) {
                         $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
@@ -1118,6 +1199,20 @@
             $table = sanitizeString('delete');
             $response = "";
             switch ($table) {
+                case "AwardWinners":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT DELETE FROM THE $table TABLE";
+                    }
+                    break;
+                case "Awards":
+                    if(!$usernameExists) {
+                        $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
+                    } else {
+                        $response = "ERROR: YOU MAY NOT DELETE FROM THE $table TABLE";
+                    }
+                    break;
                 case "CraftableObjectMaterials":
                     if(!$usernameExists) {
                         $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";

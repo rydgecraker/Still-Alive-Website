@@ -1537,7 +1537,11 @@
         $headers = "From: app@stillalivelarp.com";
         $message = sanitizeString('sendContactUsEmail');
         
-        mail($to, $subject, $message, $headers);
+            if(mail($to, $subject, $message, $headers)){
+                echo "Email Sent";
+            } else {
+                echo "ERROR: email not sent";
+            }
     } else {
         header('Content-Type: text/plain');
         echo "ERROR: NO USERNAME SPECIFIED";

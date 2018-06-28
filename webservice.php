@@ -1531,6 +1531,13 @@
         fclose($myfile);
         header('Content-Type: text/plain');
         echo "SUCCESS!";
+    } else if (isGiven('sendContactUsEmail') && isGiven('name')){
+        $to = "rydgecraker@gmail.com";
+        $subject = "Contact Us - Still Alive - " . sanitizeString('name');
+        $headers = "From: app@stillalivelarp.com";
+        $message = sanitizeString('sendContactUsEmail');
+        
+        mail($to, $subject, $message, $headers);
     } else {
         header('Content-Type: text/plain');
         echo "ERROR: NO USERNAME SPECIFIED";

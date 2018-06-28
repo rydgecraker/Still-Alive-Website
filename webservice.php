@@ -1532,7 +1532,7 @@
         echo "SUCCESS!";
     } else if (isGiven('sendContact') && isGiven('name')){
         $name = sanitizeString('name');
-        $message = sanitizeString('sendContactUsEmail');
+        $message = sanitizeString('sendContact');
         $date = getCurrentDate();
         $filename = $date . " - " . $name . " - " . getCurrentTime();
         $myfile = fopen("../../Other/messages/" . $filename, "w") or die("ERROR: unable to open file!");

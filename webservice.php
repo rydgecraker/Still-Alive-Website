@@ -1479,8 +1479,7 @@
         fwrite($myfile, $il3);
         fclose($myfile);
         header('Content-Type: text/plain');
-        echo "SUCCESS!";
-        
+        echo "SUCCESS!"; 
     } else if(isGiven('fetchIntrigue')){
         header('Content-Type: text/plain');
         $fp = fopen("../../Other/playerIntrigue.txt", "r");
@@ -1531,16 +1530,33 @@
         fclose($myfile);
         header('Content-Type: text/plain');
         echo "SUCCESS!";
-    } else if (isGiven('sendContactUsEmail') && isGiven('name')){
-        $to = "rydgecraker@gmail.com";
-        $subject = "Contact Us - Still Alive - " . sanitizeString('name');
+    } else if (isGiven('sendContact') && isGiven('name')){
+        $name = sanitizeString('name');
         $message = sanitizeString('sendContactUsEmail');
-        
-            if(mail($to, $subject, $message)){
-                echo "Email Sent";
-            } else {
-                echo "ERROR: email not sent";
+        $date = getCurrentDate();
+        $filename = $date . " - " . $name . " - " . getCurrentTime();
+        $myfile = fopen("../../Other/messages/" . $filename, "w") or die("ERROR: unable to open file!");
+        fwrite($myfile, $message);
+        fclose($myfile);
+        header('Content-Type: text/plain');
+        echo "SUCCESS!";
+    } else if (isGiven('getContactTitles')) {
+        foreach (new DirectoryIterator("../../Other/messages/") as $file) {
+            if ($file->isFile()) {
+               echo $file->getFilename() . "\n";
             }
+        }
+    } else if (isGiven('getContactMessage')) {
+        $filename = sanitizeString('getContactMessage');
+        header('Content-Type: text/plain');
+        $fp = fopen("../../Other/messages/" . $filename, "r");
+        while(!feof ($fp)) {
+            $line = rtrim(fgets($fp));
+            if($line != ""){
+                echo $line;
+            }
+        }
+        fclose($fp);
     } else {
         header('Content-Type: text/plain');
         echo "ERROR: NO USERNAME SPECIFIED";

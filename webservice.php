@@ -1534,10 +1534,9 @@
     } else if (isGiven('sendContactUsEmail') && isGiven('name')){
         $to = "rydgecraker@gmail.com";
         $subject = "Contact Us - Still Alive - " . sanitizeString('name');
-        $headers = "From: app@stillalivelarp.com";
         $message = sanitizeString('sendContactUsEmail');
         
-            if(mail($to, $subject, $message, $headers)){
+            if(mail($to, $subject, $message)){
                 echo "Email Sent";
             } else {
                 echo "ERROR: email not sent";

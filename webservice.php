@@ -995,31 +995,6 @@
                     if(!$usernameExists) {
                         $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
                     } else {
-                        echo isGiven('charID')." - charID<br>";
-                        echo isGiven('name')." - nm<br>";
-                        echo isGiven('isAlive')." - isalive<br>";
-                        echo isGiven('skills')." - skls<br>";
-                        echo isGiven('spentXp')." - spenxp<br>";
-                        echo isGiven('spentFS')." - spenFS<br>";
-                        echo isGiven('infect')." - infect<br>";
-                        echo isGiven('primWeap')." - primweap<br>";
-                        echo isGiven('bull')." - bull<br>";
-                        echo isGiven('mega')." - meg<br>";
-                        echo isGiven('accu')." - acc<br>";
-                        echo isGiven('milli')." - mi<br>";
-                        echo isGiven('rocket')." - roc<br>";
-                        echo isGiven('bio')." - bio<br>";
-                        echo isGiven('bullCas')." - bullcas<br>";
-                        echo isGiven('megaCas')." - megCas<br>";
-                        echo isGiven('accuCas')." - acccas<br>";
-                        echo isGiven('milliCas')." - milCas<br>";
-                        echo isGiven('rocketCas')." - rocCas<br>";
-                        echo isGiven('tech')." - tech<br>";
-                        echo isGiven('mech')." - mech<br>";
-                        echo isGiven('stone')." - stone<br>";
-                        echo isGiven('wood')." - wood<br>";
-                        echo isGiven('metal')." - metal<br>";
-                        echo isGiven('cloth')." - cloth<br>";
                         if(isGiven('charID') && isGiven('name') && isGiven('isAlive') && isGiven('skills') && isGiven('spentXp') && isGiven('spentFS') && isGiven('infect') && isGiven('primWeap') && isGiven('bull') && isGiven('mega') && isGiven('accu') && isGiven('milli') && isGiven('rocket') && isGiven('bio') && isGiven('bullCas') && isGiven('megaCas') && isGiven('accuCas') && isGiven('rocketCas') && isGiven('milliCas') && isGiven('tech') && isGiven('mech') && isGiven('stone') && isGiven('wood') && isGiven('metal') && isGiven('cloth')) {
 
                             //request should look like:

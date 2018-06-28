@@ -49,7 +49,7 @@
     function getDbUpdateStatusNum(){
         header('Content-Type: text/plain');
         $updateNum = 0;
-        $fp = fopen("../../Other/dbStatus.txt", "r");
+        $fp = fopen("../../Other/dbstatus.txt", "r");
         while(!feof ($fp)) {
             $line = rtrim(fgets($fp));
             if($line != ""){
@@ -61,7 +61,7 @@
     }
     
     function writeDbUpdateStatusNum($updateNum) {
-        $myfile = fopen("../../Other/dbStatus.txt", "w") or die("ERROR: unable to open file!");
+        $myfile = fopen("../../Other/dbstatus.txt", "w") or die("ERROR: unable to open file!");
         fwrite($myfile, $updateNum."");
         fclose($myfile);
         header('Content-Type: text/plain');

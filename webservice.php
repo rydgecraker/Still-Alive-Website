@@ -49,7 +49,7 @@
     function getDbUpdateStatusNum(){
         header('Content-Type: text/plain');
         $updateNum = 0;
-        $fp = fopen("../../dbStatus.txt", "r");
+        $fp = fopen("../../Other/dbStatus.txt", "r");
         while(!feof ($fp)) {
             $line = rtrim(fgets($fp));
             if($line != ""){
@@ -61,7 +61,7 @@
     }
     
     function writeDbUpdateStatusNum($updateNum) {
-        $myfile = fopen("../../dbStatus.txt", "w") or die("ERROR: unable to open file!");
+        $myfile = fopen("../../Other/dbStatus.txt", "w") or die("ERROR: unable to open file!");
         fwrite($myfile, $updateNum."");
         fclose($myfile);
         header('Content-Type: text/plain');
@@ -1426,7 +1426,7 @@
         } 
     } else if(isGiven('vatnapciagr')){
         $vatnapciagr = sanitizeString('vatnapciagr');
-        $fp = fopen("../../vatnapciagr.txt", "r");
+        $fp = fopen("../../AdminStuff/vatnapciagr.txt", "r");
         while(!feof ($fp)) {
             $line = rtrim(fgets($fp));
             if($line != ""){
@@ -1446,14 +1446,14 @@
         fclose($fp);
     }else if(isGiven('sepidkwtct')){
         $sepidkwtct = sanitizeString('sepidkwtct');
-        $myfile = fopen("../../eventPassword.txt", "w") or die("ERROR: unable to open file!");
+        $myfile = fopen("../../EventRelatedStuff/eventPassword.txt", "w") or die("ERROR: unable to open file!");
         fwrite($myfile, $sepidkwtct);
         fclose($myfile);
         header('Content-Type: text/plain');
         echo "SUCCESS!";
     } else if(isGiven('cepidkwtct')){
         $cepidkwtct = sanitizeString('cepidkwtct');
-        $fp = fopen("../../eventPassword.txt", "r");
+        $fp = fopen("../../EventRelatedStuff/eventPassword.txt", "r");
         while(!feof ($fp)) {
             $line = rtrim(fgets($fp));
             if($line != ""){
@@ -1474,7 +1474,7 @@
         $intrigue = sanitizeString('setIntrigue');
         list($il1, $il2, $il3) = explode("~~~", $intrigue);
         $sepidkwtct = sanitizeString('sepidkwtct');
-        $myfile = fopen("../../playerIntrigue.txt", "w") or die("ERROR: unable to open file!");
+        $myfile = fopen("../../Other/playerIntrigue.txt", "w") or die("ERROR: unable to open file!");
         fwrite($myfile, $il1."\n");
         fwrite($myfile, $il2."\n");
         fwrite($myfile, $il3);
@@ -1484,7 +1484,7 @@
         
     } else if(isGiven('fetchIntrigue')){
         header('Content-Type: text/plain');
-        $fp = fopen("../../playerIntrigue.txt", "r");
+        $fp = fopen("../../Other/playerIntrigue.txt", "r");
         while(!feof ($fp)) {
             $line = rtrim(fgets($fp));
             if($line != ""){
@@ -1498,7 +1498,7 @@
         
     } else if(isGiven('createPlayerPass')) {
         $cpp = sanitizeString('createPlayerPass');
-        $fp = fopen("../../appPassword.txt", "r");
+        $fp = fopen("../../AppSecurity/appPassword.txt", "r");
         while(!feof ($fp)) {
             $line = rtrim(fgets($fp));
             if($line != ""){

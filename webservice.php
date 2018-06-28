@@ -1473,7 +1473,6 @@
     } else if(isGiven('setIntrigue')){
         $intrigue = sanitizeString('setIntrigue');
         list($il1, $il2, $il3) = explode("~~~", $intrigue);
-        $sepidkwtct = sanitizeString('sepidkwtct');
         $myfile = fopen("../../Other/playerIntrigue.txt", "w") or die("ERROR: unable to open file!");
         fwrite($myfile, $il1."\n");
         fwrite($myfile, $il2."\n");
@@ -1515,7 +1514,24 @@
             }
         }
         fclose($fp);
-    }else {
+    } else if(isGiven('fetchAppVersion')) {
+        header('Content-Type: text/plain');
+        $fp = fopen("../../Other/appVersion.txt", "r");
+        while(!feof ($fp)) {
+            $line = rtrim(fgets($fp));
+            if($line != ""){
+                echo $line;
+            }
+        }
+        fclose($fp);
+    } else if (isGiven('setAppVersion')) {
+        $version = sanitizeString('setAppVersion');
+        $myfile = fopen("../../Other/appVersion.txt", "w") or die("ERROR: unable to open file!");
+        fwrite($myfile, $version);
+        fclose($myfile);
+        header('Content-Type: text/plain');
+        echo "SUCCESS!";
+    } else {
         header('Content-Type: text/plain');
         echo "ERROR: NO USERNAME SPECIFIED";
     }

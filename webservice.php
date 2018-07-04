@@ -1530,13 +1530,14 @@
         fclose($myfile);
         header('Content-Type: text/plain');
         echo "SUCCESS!";
-    } else if (isGiven('sendContact') && isGiven('name')){
+    } else if (isGiven('sendContactMessage') && isGiven('name') && isGiven('email')){
         $name = sanitizeString('name');
-        $message = sanitizeString('sendContact');
+        $email = sanitizeString('email');
+        $message = sanitizeString('sendContactMessage');
         $date = getCurrentDate();
         $filename = $date . " - " . $name . " - " . getCurrentTime();
         $myfile = fopen("../../Other/messages/" . $filename, "w") or die("ERROR: unable to open file!");
-        fwrite($myfile, $message);
+        fwrite($myfile, $message . "\n" . $email);
         fclose($myfile);
         header('Content-Type: text/plain');
         echo "SUCCESS!";

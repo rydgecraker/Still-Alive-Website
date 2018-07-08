@@ -18,6 +18,27 @@
         }
     }
     
+    function createHistoricalEvent($pdo, $username, $title, $desc, $charID, $eventID){
+        //request should look like:
+        //username=asdf&create=HistoricalEvents&character=#&event=#&name=asdf&desc=asdf
+        //character and event are optional
+
+        $playerID = getPlayerID($pdo, $username);
+
+
+        try {
+            $pdo->beginTransaction();
+            $query = $pdo->prepare("INSERT INTO HistoricalEvents (playerID, characterID, eventID, name, description, date) " .
+                    "VALUES (?, ?, ?, ?, ?, ?)");
+            $query->execute([$playerID, $charID, $eventID, $title, $desc, getCurrentDate()]);
+            $pdo->commit();
+
+        }catch (Exception $e){
+            $pdo->rollBack();
+            throw $e;
+        }
+    }
+    
     function getPlayerID($pdo, $username){
         $playerID;
         $query = $pdo->prepare('SELECT * FROM Players WHERE username = ?');
@@ -159,11 +180,12 @@
                 $pdo->commit();
                 header('Content-Type: text/plain');
                 echo "SUCCESS";
+                createHistoricalEvent($pdo, $username, "Player changed password", "Player changed password to new value", null, null);
            }catch (Exception $e){
                $pdo->rollBack();
                throw $e;
            } 
-            
+     
         } else if(isGiven('create')) {
             $createEntryInTable = sanitizeString('create');
             
@@ -190,10 +212,11 @@
                                  $pdo->commit();
                                  
                                  $response = "Sucessfully added a new Award Winner.";
+                                 createHistoricalEvent($pdo, $username, "Award winner created", "Player is an award winner", null, $eventID);
                             }catch (Exception $e){
                                 $pdo->rollBack();
                                 throw $e;
-                            } 
+                            }
                         } else {
                             $response = "Please Supply all of the necessary data for the $createEntryInTable table";
                         }
@@ -218,6 +241,7 @@
                                  $pdo->commit();
                                  
                                  $response = "Sucessfully added a new Award Type.";
+                                 createHistoricalEvent($pdo, $username, "Award Created", "An award type was created", null, null);
                             }catch (Exception $e){
                                 $pdo->rollBack();
                                 throw $e;
@@ -247,6 +271,7 @@
                                  $pdo->commit();
                                  
                                  $response = "Sucessfully added a new Craftable Object Material.";
+                                 createHistoricalEvent($pdo, $username, "Craftable Object Material Created", "A craftable object material was created", null, null);
                             }catch (Exception $e){
                                 $pdo->rollBack();
                                 throw $e;
@@ -275,6 +300,7 @@
                                  $pdo->commit();
                                  
                                  $response = "Sucessfully added a new Craftable Object SkillID.";
+                                 createHistoricalEvent($pdo, $username, "Craftable Object Required Skill Created", "A craftable object required skill entry was created", null, null);
                             }catch (Exception $e){
                                 $pdo->rollBack();
                                 throw $e;
@@ -311,6 +337,7 @@
                                  $pdo->commit();
                                  
                                  $response = "Sucessfully added a new Craftable Object.";
+                                 createHistoricalEvent($pdo, $username, "Craftable Object Created", "A craftable object entry was created", null, null);
                             }catch (Exception $e){
                                 $pdo->rollBack();
                                 throw $e;
@@ -340,6 +367,7 @@
                                  $pdo->commit();
                                  
                                  $response = "Sucessfully added a new Craftable Object as a Material.";
+                                 createHistoricalEvent($pdo, $username, "Craftable Object as Material Created", "A craftable object as material entry was created", null, null);
                             }catch (Exception $e){
                                 $pdo->rollBack();
                                 throw $e;
@@ -368,6 +396,7 @@
                                  $pdo->commit();
                                  
                                  $response = "Sucessfully added a new Craftable Object as a Material.";
+                                 createHistoricalEvent($pdo, $username, "Material Created", "A Material type was created", null, null);
                             }catch (Exception $e){
                                 $pdo->rollBack();
                                 throw $e;
@@ -401,6 +430,8 @@
                                  $pdo->commit();
                                  
                                  $response = "Sucessfully added a new Skill Category to the Skill Categories Table with the name: $name";
+                                 createHistoricalEvent($pdo, $username, "Skill Category Created", "A skill category type was created", null, null);
+                                 
                             }catch (Exception $e){
                                 $pdo->rollBack();
                                 throw $e;
@@ -430,6 +461,7 @@
                                  $playerID = $pdo->lastInsertId();
                                  $pdo->commit();
                                  $response = "Sucessfully added a new player to the Players Table with ID=$playerID";
+                                 createHistoricalEvent($pdo, $username, "Player Created", "The player was created on this date", null, null);
                             }catch (Exception $e){
                                 $pdo->rollBack();
                                 throw $e;
@@ -467,6 +499,7 @@
                                  $charID = $pdo->lastInsertId();
                                  $pdo->commit();
                                  $response = "Sucessfully added a new character to the Characters Table with the playerID $playerID ($username) at the ID=$charID";
+                                 createHistoricalEvent($pdo, $username, "Character Created", "The character was created on this date", $charID, null);
                             }catch (Exception $e){
                                 $pdo->rollBack();
                                 throw $e;
@@ -495,6 +528,7 @@
                                  $query->execute([$characterID, $skillID, getCurrentDate()]);
                                  $pdo->commit();
                                  $response = "Sucessfully added a new Character Skill to the Character Skills Table with the characterID: $characterID";
+                                 createHistoricalEvent($pdo, $username, "Character added a new skill.", "The character added a new skill with the ID of $skillID.", $characterID, null);
                             }catch (Exception $e){
                                 $pdo->rollBack();
                                 throw $e;
@@ -559,6 +593,7 @@
                                  $query->execute([getCurrentDate(), getTomorrowDate(), $start, $end, $name, $desc]);
                                  $pdo->commit();
                                  $response = "Sucessfully added a new Event to the Events Table.";
+                                 createHistoricalEvent($pdo, $username, "Event Created", "An event was created", null, null);
                             }catch (Exception $e){
                                 $pdo->rollBack();
                                 throw $e;
@@ -629,7 +664,7 @@
                                 $query->execute([$characterID, $name, $desc, getCurrentDate()]);
                                 $pdo->commit();
                                 $response = "Sucessfully added a new Item to the Items Table.";
-                                 
+                                createHistoricalEvent($pdo, $username, "Item Created", "An item type was created", null, null);
                             }catch (Exception $e){
                                 $pdo->rollBack();
                                 throw $e;
@@ -656,7 +691,7 @@
                                 $query->execute([$desc]);
                                 $pdo->commit();
                                 $response = "Sucessfully added a new Primary Weapon to the PrimaryWeapons Table.";
-                                 
+                                createHistoricalEvent($pdo, $username, "Primary Weapon Created", "A primary weapon type was created", null, null);
                             }catch (Exception $e){
                                 $pdo->rollBack();
                                 throw $e;
@@ -689,7 +724,7 @@
                                 $query->execute([$xp, $skillTypeID, $name, $desc, $flav, $minInfect, $skillCategory]);
                                 $pdo->commit();
                                 $response = "Sucessfully added a new Skill to the Skills Table.";
-                                 
+                                createHistoricalEvent($pdo, $username, "Skill Created", "A skill entry was created", null, null);
                             }catch (Exception $e){
                                 $pdo->rollBack();
                                 throw $e;
@@ -717,7 +752,7 @@
                                 $query->execute([$base, $prereq]);
                                 $pdo->commit();
                                 $response = "Sucessfully added a new Skill Prereq to the SkillPrerequisites Table.";
-                                 
+                                createHistoricalEvent($pdo, $username, "Skill Prerequisite Created", "A skill prerequisite entry was created", null, null);
                             }catch (Exception $e){
                                 $pdo->rollBack();
                                 throw $e;
@@ -744,7 +779,7 @@
                                 $query->execute([$name]);
                                 $pdo->commit();
                                 $response = "Sucessfully added a new Skill Type to the SkillTypes Table.";
-                                 
+                                createHistoricalEvent($pdo, $username, "Skill Type Created", "A skill type entry was created", null, null);
                             }catch (Exception $e){
                                 $pdo->rollBack();
                                 throw $e;
@@ -886,7 +921,7 @@
         } else if(isGiven('update')){
             
             $updateEntryInTable = sanitizeString('update');
-            
+  
             $response = "";
             switch($updateEntryInTable) {
                 case "AwardWinners":
@@ -981,6 +1016,7 @@
                                  }
                                  $pdo->commit();
                                  $response = "Sucessfully updated $username's entry in the Players table";
+                                 createHistoricalEvent($pdo, $username, "Player was modified", "The player's stats were modified", null, null);
                             }catch (Exception $e){
                                 $pdo->rollBack();
                                 throw $e;
@@ -1041,6 +1077,7 @@
                                  }
                                  $pdo->commit();
                                  $response = "Sucessfully updated $name's entry in the Characters table";
+                                 createHistoricalEvent($pdo, $username, "Character Modified", "The character's stats were modified", $characterID, null);
                             }catch (Exception $e){
                                 $pdo->rollBack();
                                 throw $e;
@@ -1088,6 +1125,7 @@
                                  $query->execute([getCurrentDate(), getCurrentTime(), $name, $desc, $eventID]);
                                  $pdo->commit();
                                  $response = "Sucessfully updated $name's entry in the Characters table";
+                                 createHistoricalEvent($pdo, $username, "Event Modified", "This event was modified", null, $eventID);
                             }catch (Exception $e){
                                 $pdo->rollBack();
                                 throw $e;
@@ -1142,6 +1180,7 @@
                                  $query->execute([$xp, $skillType, $name, $desc, $flav, $infect, $skillCategory, $skillID]);
                                  $pdo->commit();
                                  $response = "Sucessfully updated $name's entry in the Skills table";
+                                 createHistoricalEvent($pdo, $username, "Skill Entry Modified", "A skill entry was modified (ID of $skillID)", null, null);
                             }catch (Exception $e){
                                 $pdo->rollBack();
                                 throw $e;
@@ -1170,6 +1209,7 @@
                                  $query->execute([$base, $prereq, $oldBase, $oldPrereq]);
                                  $pdo->commit();
                                  $response = "Sucessfully updated skill ID: $oldBase's entry in the SkillPrerequisites table";
+                                 createHistoricalEvent($pdo, $username, "Skill Prereqs Modified", "A skill's prerequisites were modified. Old base=$oldBase new base=$base oldPrereq=$oldPrereq new prereq=$prereq", null, null);
                             }catch (Exception $e){
                                 $pdo->rollBack();
                                 throw $e;
@@ -1266,101 +1306,28 @@
                     if(!$usernameExists) {
                         $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
                     } else {
-                        //request should look like:
-                        //username=asdf&delete=Players
-
-                        $playerID = getPlayerID($pdo, $username);
-
-                        try {
-                             $pdo->beginTransaction();
-                             $query = $pdo->prepare("DELETE FROM Players WHERE playerID = ?");
-                             $query->execute([$playerID]);
-                             $pdo->commit();
-                             $response = "Sucessfully deleted $username from the Players table";
-                        }catch (Exception $e){
-                            $pdo->rollBack();
-                            throw $e;
-                        }
+                        $response = "ERROR: YOU MAY NOT DELETE FROM THE PLAYERS TABLE";
                     }
                     break;
                 case "Characters":
                     if(!$usernameExists) {
                         $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
                     } else {
-                        if(isGiven('charID')) {
-
-                            //request should look like:
-                            //username=asdf&delete=Characters&charID=#
-
-                            $charID = sanitizeInt('charID');
-
-                            try {
-                                $pdo->beginTransaction();
-                                $query = $pdo->prepare("DELETE FROM Characters WHERE characterID = ?");
-                                $query->execute([$charID]);
-                                $pdo->commit();
-                                $response = "Sucessfully deleted character with ID: $charID from the Characters table";
-                           }catch (Exception $e){
-                               $pdo->rollBack();
-                               throw $e;
-                           }
-                        } else {
-                            $response = "Please Supply all of the necessary data for the $table table";
-                        }
+                        $response = "ERROR: YOU MAY NOT DELETE FROM THE CHARACTERS TABLE";
                     }
                     break;
                 case "CharacterSkills":
                     if(!$usernameExists) {
                         $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
                     } else {
-                        if(isGiven('charID') && isGiven('skillID')) {
-
-                            //request should look like:
-                            //username=asdf&delete=CharacterSkills&charID=#&skillID=#
-
-                            $charID = sanitizeInt('charID');
-                            $skillID = sanitizeInt('skillID');
-
-                            try {
-                                $pdo->beginTransaction();
-                                $query = $pdo->prepare("DELETE FROM CharacterSkills WHERE characterID = ? AND skillID = ?");
-                                $query->execute([$charID, $skillID]);
-                                $pdo->commit();
-                                $response = "Sucessfully deleted character skill ($skillID) from character with ID: $charID from the CharacterSkills table";
-                           }catch (Exception $e){
-                               $pdo->rollBack();
-                               throw $e;
-                           }
-                        } else {
-                            $response = "Please Supply all of the necessary data for the $table table";
-                        }
+                        $response = "ERROR: YOU MAY NOT DELETE FROM THE CHARACTER SKILLS TABLE";
                     }
                     break;
                 case "EventAttendees":
                     if(!$usernameExists) {
                         $response = "ERROR: PLAYER USERNAME DOES NOT EXIST";
                     } else {
-                        if(isGiven('eventID')) {
-
-                            //request should look like:
-                            //username=asdf&delete=EventAttendees&eventID=#
-
-                            $eventID = sanitizeInt('eventID');
-                            $playerID = getPlayerID($pdo, $username);
-
-                            try {
-                                $pdo->beginTransaction();
-                                $query = $pdo->prepare("DELETE FROM EventAttendees WHERE eventID = ? AND playerID = ?");
-                                $query->execute([$eventID, $playerID]);
-                                $pdo->commit();
-                                $response = "Sucessfully deleted Event Attendance for $username for the event with ID $eventID in the EventAttendees table";
-                           }catch (Exception $e){
-                               $pdo->rollBack();
-                               throw $e;
-                           }
-                        } else {
-                            $response = "Please Supply all of the necessary data for the $table table";
-                        }
+                        $response = "ERROR: YOU MAY NOT DELETE FROM THE EVENT ATTENDEES TABLE";
                     }
                     break;
                 case "Events":
@@ -1430,10 +1397,11 @@
         while(!feof ($fp)) {
             $line = rtrim(fgets($fp));
             if($line != ""){
-                
+               
                 if($line == $vatnapciagr){
                     header('Content-Type: text/plain');
                     echo "ACCESS GRANTED";
+                    createHistoricalEvent($pdo, null, "Admin Panel Login", "A player logged into the admin panel. Id isn't given.", null, null);
                     break;
                 } else {
                     header('Content-Type: text/plain');
@@ -1451,6 +1419,7 @@
         fclose($myfile);
         header('Content-Type: text/plain');
         echo "SUCCESS!";
+        createHistoricalEvent($pdo, null, "Event Password Set", "Event password successfully set to $sepidkwtct", null, null);
     } else if(isGiven('cepidkwtct')){
         $cepidkwtct = sanitizeString('cepidkwtct');
         $fp = fopen("../../EventRelatedStuff/eventPassword.txt", "r");
@@ -1479,7 +1448,8 @@
         fwrite($myfile, $il3);
         fclose($myfile);
         header('Content-Type: text/plain');
-        echo "SUCCESS!"; 
+        echo "SUCCESS!";
+        createHistoricalEvent($pdo, null, "Intrigue Messages Set", "Intrigue Messages set to 1) $il1 | 2) $il2 | 3) $il3", null, null);
     } else if(isGiven('fetchIntrigue')){
         header('Content-Type: text/plain');
         $fp = fopen("../../Other/playerIntrigue.txt", "r");
@@ -1504,6 +1474,7 @@
                 if($line == $cpp){
                     header('Content-Type: text/plain');
                     echo "ACCESS GRANTED";
+                    createHistoricalEvent($pdo, null, "Create Account Login", "The create account password was sucessfully typed in.", null, null);
                     break;
                 } else {
                     header('Content-Type: text/plain');
@@ -1530,6 +1501,7 @@
         fclose($myfile);
         header('Content-Type: text/plain');
         echo "SUCCESS!";
+        createHistoricalEvent($pdo, null, "App Version Set", "The checkable app version was set to $version", null, null);
     } else if (isGiven('sendContactMessage') && isGiven('name') && isGiven('email')){
         $name = sanitizeString('name');
         $email = sanitizeString('email');
@@ -1541,6 +1513,7 @@
         fclose($myfile);
         header('Content-Type: text/plain');
         echo "SUCCESS!";
+        createHistoricalEvent($pdo, null, "Contact Message Sent", "A contact message was sent from $name. email=$email. Their message was: $message", null, null);
     } else if (isGiven('getContactTitles')) {
         foreach (new DirectoryIterator("../../Other/messages/") as $file) {
             if ($file->isFile()) {

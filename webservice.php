@@ -20,9 +20,9 @@
     
     function createHistoricalEvent($username, $title, $desc, $charID, $eventID){
         $pdo = setUpPDO();
-        $playerID = getPlayerID($pdo, $username);
-
-
+        if($username != null){
+            $playerID = getPlayerID($pdo, $username);
+        }
         try {
             $pdo->beginTransaction();
             $query = $pdo->prepare("INSERT INTO HistoricalEvents (playerID, characterID, eventID, name, description, date) " .

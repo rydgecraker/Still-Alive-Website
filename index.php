@@ -4,7 +4,7 @@
         <head>
             <title>Still Alive Post-Apocalyptic Larp</title>
             <meta charset="utf-8">
-            <link href="css/stillAlive.css" rel="stylesheet">
+            <link href="css/still_alive.css" rel="stylesheet">
         </head>
         <body>
             <div id="headspace">
@@ -23,14 +23,7 @@
                         <div id="homepageIntro">
                             
                             <h1 id="underConstruction">Welcome new recruits! Unfortunately, this website is still under construction. Check back later!</h1>
-                            <p>
-                                <?php
-                                    echo "Let me just start out by saying: Thank you for taking an interest in STILL ALIVE! This idea has been in the works for quite some time and we (The Game Runners) are extremely happy to finally see it becoming what it was always meant to. We started this project in late 2014 and have been building on it ever since. We began beta-testing in 2016 and hope to release our story upon the world in summer, 2017. For those who are uninformed, Still Alive is a Live Action Role-Playing (LARP) game, taking place in a post-apocalyptic scenario. Your mission, should you choose to accept it, is to survive all of the challenges of a zombie apocalypse alongside all of the other survivors at the base camp (Aptly named: Still Alive). You'll face hardships, tough moral decisions, hordes of zombies, and more!<br><br>
-                                    Our game is for mature players only and thus players are required to be 18 years of age or older. With parental consent, players may be as young as 16 so long as they follow ALL of the rules for Minors (found in the Still Alive Handbook: page 4). Anyone under the age of 16 will not be allowed to play - no exceptions.</p>
-                                    <small class=\"bulletinFooter\">Signed,<br>The Still Alive Staff";
-                                ?>
-                            </p>
-
+                            
                             <!--
                             <h1>First Time here? Head towards our: <a href="intro.html">Introduction Page!</a></h1>
                             <h1>For those just arriving, remember this...</h1>

@@ -37,7 +37,7 @@
     }
     
     function getPlayerID($pdo, $username){
-        $playerID;
+        $playerID = 1;
         $query = $pdo->prepare('SELECT * FROM Players WHERE username = ?');
         $query->execute([$username]);
             while($row = $query->fetch()) {
@@ -119,7 +119,6 @@
         $updateStatusNum = getDbUpdateStatusNum();
         
         $username = sanitizeString('username');
-        
         
         $pdo = setUpPDO();
 

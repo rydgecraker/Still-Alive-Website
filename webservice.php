@@ -1,22 +1,10 @@
 <?php
     ini_set('display_errors', 1); 
     error_reporting(-1);
-        /* require the user as the parameter */
-    function sanitizeString($input){
-        return filter_input(INPUT_GET, $input, FILTER_SANITIZE_STRING);
-    }
-    
-    function sanitizeInt($input) {
-        return filter_input(INPUT_GET, $input, FILTER_SANITIZE_NUMBER_INT);
-    }
-    
-    function callQuery($pdo, $query) {
-        try {
-            return $pdo->query($query);
-        } catch (Exception $ex) {
-               throw $ex;
-        }
-    }
+
+    require 'php/Inputs.php';
+    require 'php/DateTimeFunctions.php';
+    require 'php/DBConnect.php';
     
     function createHistoricalEvent($username, $title, $desc, $charID, $eventID){
         $pdo = setUpPDO();
@@ -47,27 +35,10 @@
         return $playerID;
     }
     
-    function getCurrentDate(){
-        return date('Y-m-d');
-    }
-    
-    function getTomorrowDate(){
-        $date = new DateTime('tomorrow');
-        return $date->format('Y-m-d');
-    }
-    
-    function getCurrentTime(){
-        return date('H:i:s', time());
-    }
-    
-    function isGiven($input) {
-        return isset($_GET[$input]);
-    }
-    
     function getDbUpdateStatusNum(){
         header('Content-Type: text/plain');
         $updateNum = 0;
-        $fp = fopen("../../Other/dbstatus.txt", "r");
+        $fp = fopen(getDbStatusUrl(), "r");
         while(!feof ($fp)) {
             $line = rtrim(fgets($fp));
             if($line != ""){
@@ -79,39 +50,10 @@
     }
     
     function writeDbUpdateStatusNum($updateNum) {
-        $myfile = fopen("../../Other/dbstatus.txt", "w") or die("ERROR: unable to open file!");
+        $myfile = fopen(getDbStatusUrl(), "w") or die("ERROR: unable to open file!");
         fwrite($myfile, $updateNum."");
         fclose($myfile);
         header('Content-Type: text/plain');
-    }
-    
-    function readFromDbCredsFolder($filename) {
-        $fp = fopen("../../databaseCred/" . $filename, "r");
-        $response = "";
-        while(!feof ($fp)) {
-            $line = rtrim(fgets($fp));
-            if($line != ""){
-                $response .= $line;
-            }
-        }
-        fclose($fp);
-        return $response;
-    }
-    
-    function setUpPDO(){
-        $host = readFromDbCredsFolder("host.txt");
-        $db   = readFromDbCredsFolder("db.txt");
-        $user = readFromDbCredsFolder("user.txt");
-        $pass = readFromDbCredsFolder("pass.txt");
-        $charset = 'utf8mb4';
-
-        $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
-        $opt = [
-            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES   => false,
-        ];
-        return new PDO($dsn, $user, $pass, $opt);
     }
     
     if(isGiven('username')) {
@@ -1394,7 +1336,7 @@
         } 
     } else if(isGiven('vatnapciagr')){
         $vatnapciagr = sanitizeString('vatnapciagr');
-        $fp = fopen("../../AdminStuff/vatnapciagr.txt", "r");
+        $fp = fopen(getVatnapciagrUrl(), "r");
         while(!feof ($fp)) {
             $line = rtrim(fgets($fp));
             if($line != ""){
@@ -1415,7 +1357,7 @@
         fclose($fp);
     }else if(isGiven('sepidkwtct')){
         $sepidkwtct = sanitizeString('sepidkwtct');
-        $myfile = fopen("../../EventRelatedStuff/eventPassword.txt", "w") or die("ERROR: unable to open file!");
+        $myfile = fopen(getEventPasswordUrl(), "w") or die("ERROR: unable to open file!");
         fwrite($myfile, $sepidkwtct);
         fclose($myfile);
         header('Content-Type: text/plain');
@@ -1423,7 +1365,7 @@
         createHistoricalEvent(null, "Event Password Set", "Event password successfully set to $sepidkwtct", null, null);
     } else if(isGiven('cepidkwtct')){
         $cepidkwtct = sanitizeString('cepidkwtct');
-        $fp = fopen("../../EventRelatedStuff/eventPassword.txt", "r");
+        $fp = fopen(getEventPasswordUrl(), "r");
         while(!feof ($fp)) {
             $line = rtrim(fgets($fp));
             if($line != ""){
@@ -1443,7 +1385,7 @@
     } else if(isGiven('setIntrigue')){
         $intrigue = sanitizeString('setIntrigue');
         list($il1, $il2, $il3) = explode("~~~", $intrigue);
-        $myfile = fopen("../../Other/playerIntrigue.txt", "w") or die("ERROR: unable to open file!");
+        $myfile = fopen(getPlayerIntrigueUrl(), "w") or die("ERROR: unable to open file!");
         fwrite($myfile, $il1."\n");
         fwrite($myfile, $il2."\n");
         fwrite($myfile, $il3);
@@ -1453,7 +1395,7 @@
         createHistoricalEvent(null, "Intrigue Messages Set", "Intrigue Messages set to 1) $il1 | 2) $il2 | 3) $il3", null, null);
     } else if(isGiven('fetchIntrigue')){
         header('Content-Type: text/plain');
-        $fp = fopen("../../Other/playerIntrigue.txt", "r");
+        $fp = fopen(getPlayerIntrigueUrl(), "r");
         while(!feof ($fp)) {
             $line = rtrim(fgets($fp));
             if($line != ""){
@@ -1467,7 +1409,7 @@
         
     } else if(isGiven('createPlayerPass')) {
         $cpp = sanitizeString('createPlayerPass');
-        $fp = fopen("../../AppSecurity/appPassword.txt", "r");
+        $fp = fopen(getAppPasswordUrl(), "r");
         while(!feof ($fp)) {
             $line = rtrim(fgets($fp));
             if($line != ""){
@@ -1487,7 +1429,7 @@
         fclose($fp);
     } else if(isGiven('fetchAppVersion')) {
         header('Content-Type: text/plain');
-        $fp = fopen("../../Other/appVersion.txt", "r");
+        $fp = fopen(getAppVersionUrl(), "r");
         while(!feof ($fp)) {
             $line = rtrim(fgets($fp));
             if($line != ""){
@@ -1497,7 +1439,7 @@
         fclose($fp);
     } else if (isGiven('setAppVersion')) {
         $version = sanitizeString('setAppVersion');
-        $myfile = fopen("../../Other/appVersion.txt", "w") or die("ERROR: unable to open file!");
+        $myfile = fopen(getAppVersionUrl(), "w") or die("ERROR: unable to open file!");
         fwrite($myfile, $version);
         fclose($myfile);
         header('Content-Type: text/plain');
@@ -1509,14 +1451,14 @@
         $message = sanitizeString('sendContactMessage');
         $date = getCurrentDate();
         $filename = $date . " - " . $name . " - " . getCurrentTime();
-        $myfile = fopen("../../Other/messages/" . $filename, "w") or die("ERROR: unable to open file!");
+        $myfile = fopen(getMessagesDirectoryUrl() . $filename, "w") or die("ERROR: unable to open file!");
         fwrite($myfile, $message . "\n" . $email);
         fclose($myfile);
         header('Content-Type: text/plain');
         echo "SUCCESS!";
         createHistoricalEvent(null, "Contact Message Sent", "A contact message was sent from $name. email=$email. Their message was: $message", null, null);
     } else if (isGiven('getContactTitles')) {
-        foreach (new DirectoryIterator("../../Other/messages/") as $file) {
+        foreach (new DirectoryIterator(getMessagesDirectoryUrl()) as $file) {
             if ($file->isFile()) {
                echo $file->getFilename() . "\n";
             }
@@ -1524,7 +1466,7 @@
     } else if (isGiven('getContactMessage')) {
         $filename = sanitizeString('getContactMessage');
         header('Content-Type: text/plain');
-        $fp = fopen("../../Other/messages/" . $filename, "r");
+        $fp = fopen(getMessagesDirectoryUrl() . $filename, "r");
         while(!feof ($fp)) {
             $line = rtrim(fgets($fp));
             if($line != ""){

@@ -23,9 +23,7 @@
                         <div id="homepageIntro">
                             
                             <h1 id="underConstruction">Welcome new recruits! Unfortunately, this website is still under construction. Check back later!</h1>
-                            <?php
-                                echo "HELLO TESTING";
-                            ?>
+                            
                             <!--
                             <h1>First Time here? Head towards our: <a href="intro.html">Introduction Page!</a></h1>
                             <h1>For those just arriving, remember this...</h1>

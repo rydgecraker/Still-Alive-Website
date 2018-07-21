@@ -1,7 +1,7 @@
 html {
     font-family: "Courier", "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
     font-size: 12px;
-    background-color: #878686;
+    background-color: #1d1c1c;
     margin:0;
     padding: 0;
 }
@@ -10,18 +10,53 @@ a:link, a:visited {
     text-decoration: none;
 }
 
-#loginFormDiv {
+h1, h2, p {
+    color: #b4b4b4;
+}
+
+header {
+    padding-top: 0.015em;
+    padding-bottom: 0.015em;
+    background-color: #6e0a06;
+    margin-bottom: 1em;
     text-align: right;
-    padding: 1em;
+}
+
+#loginForm {
+    display: none;
+}
+
+#logInBtn {
+    margin-right: 1em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    flex: 1;
+    text-align: center;
+    background-color: #1d1c1c;
+    border: 2px solid #0d0c0c;
+    //display: none;
+}
+
+#loginInfo {
+    align-content: right;
+    background-color: #6e0a06;
+    display: flex;
+}
+
+#loginPlaceholderDiv {
+    flex: 10;
+    padding-bottom: 1em;
 }
 
 #loginSubmitButton {
     padding-right: 0.5em;
 }
 
-#loginParagraph {
-    text-align: right;
-    flex: 1;
+input[type="text"], input[type="password"], input[type="submit"] {
+    font-size: 15px;
+    background-color: #1d1c1c;
+    color: #b4b4b4;
+    border-color: #0d0c0c;
 }
 
 #loginLink:link, #loginLink:visited {
@@ -52,11 +87,23 @@ body {
 
 #leftColumn {
     flex: 1;
-    background-color: #6e0a06;
     padding-left: 0;
     margin-left: 0;
-    border-bottom-right-radius: 3em;
-    border-top-right-radius: 3em;
+    display: flex;
+}
+
+#navigation {
+    flex: 9;
+    background-color: #6e0a06;
+    border-bottom-right-radius: 1em;
+}
+
+#openCloseCarrot {
+    background-color: #5f0a06;
+    padding: 2em 0.5em;
+    text-align: center;
+    border-top-right-radius: 1em;
+    border-bottom-right-radius: 1em;
 }
 
 nav ul {
@@ -73,7 +120,7 @@ nav ul li {
 }
 
 nav a {
-    color: #878686;
+    color: #b4b4b4;
     font-size: 20px;
 }
 
@@ -89,10 +136,10 @@ footer {
     text-align: center;
     font-weight: 800;
     font-size: 150%;
-    color: #6e0a06;
+    color: #b4b4b4;
 }
 
 footer a:link, footer a:visited {
-    color: #6e0a06;
+    color: #b4b4b4;
     font-size: 110%;
 }

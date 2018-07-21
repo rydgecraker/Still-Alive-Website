@@ -6,7 +6,7 @@
  * DBConnect.php
  */
 
-require 'UrlConstants.php.php';
+require 'UrlConstants.php';
 
 function readFromDbCredsFolder($filename) {
     $fp = fopen(getDatabaseSubDirectory() . $filename, "r");
@@ -21,7 +21,7 @@ function readFromDbCredsFolder($filename) {
     return $response;
 }
 
-function setUpPDO(){
+function getPDO(){
     $host = readFromDbCredsFolder("host.txt");
     $db   = readFromDbCredsFolder("db.txt");
     $user = readFromDbCredsFolder("user.txt");

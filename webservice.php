@@ -7,7 +7,7 @@
     require 'php/DBConnect.php';
     
     function createHistoricalEvent($username, $title, $desc, $charID, $eventID){
-        $pdo = setUpPDO();
+        $pdo = getPDO();
         if($username != null){
             $playerID = getPlayerID($pdo, $username);
         }
@@ -62,7 +62,7 @@
         
         $username = sanitizeString('username');
         
-        $pdo = setUpPDO();
+        $pdo = getPDO();
 
         $JSON;
 

@@ -1,0 +1,98 @@
+html {
+    font-family: "Courier", "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+    font-size: 12px;
+    background-color: #878686;
+    margin:0;
+    padding: 0;
+}
+
+a:link, a:visited {
+    text-decoration: none;
+}
+
+#loginFormDiv {
+    text-align: right;
+    padding: 1em;
+}
+
+#loginSubmitButton {
+    padding-right: 0.5em;
+}
+
+#loginParagraph {
+    text-align: right;
+    flex: 1;
+}
+
+#loginLink:link, #loginLink:visited {
+    color: #6e0a06;
+    background-color: #5f5e5f;
+    font-weight: bolder;
+    font-size: 20px;
+    border-radius: 1em;
+    padding: 1em;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+}
+
+#stillAliveTitleImage {
+    text-align: center;
+    margin: auto;
+    display: block;
+}
+
+#columns {
+    display: flex;
+    padding: 0;
+    margin: 0;
+}
+
+#leftColumn {
+    flex: 1;
+    background-color: #6e0a06;
+    padding-left: 0;
+    margin-left: 0;
+    border-bottom-right-radius: 3em;
+    border-top-right-radius: 3em;
+}
+
+nav ul {
+    list-style-type: none;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li {
+    font-size: 15px;
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+nav a {
+    color: #878686;
+    font-size: 20px;
+}
+
+#rightColumn {
+    flex: 5;
+}
+
+#underConstruction {
+    text-align: center;
+}
+
+footer {
+    text-align: center;
+    font-weight: 800;
+    font-size: 150%;
+    color: #6e0a06;
+}
+
+footer a:link, footer a:visited {
+    color: #6e0a06;
+    font-size: 110%;
+}

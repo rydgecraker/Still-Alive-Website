@@ -6,7 +6,7 @@
  * DBConnect.php
  */
 
-require 'UrlConstants.php.php';
+require 'UrlConstants.php';
 
 function readFromDbCredsFolder($filename) {
     $fp = fopen(getDatabaseSubDirectory() . $filename, "r");

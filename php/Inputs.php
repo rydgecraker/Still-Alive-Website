@@ -6,8 +6,6 @@
  * Inputs.php
  */
 
-require 'DatabaseUrlConstants.php';
-
 function sanitizeString($input){
     return filter_input(INPUT_GET, $input, FILTER_SANITIZE_STRING);
 }

@@ -2,9 +2,9 @@
     ini_set('display_errors', 1); 
     error_reporting(-1);
 
-    require 'php/Inputs.php';
-    require 'php/DateTimeFunctions.php';
-    require 'php/DBConnect.php';
+    require __DIR__ . 'php/Inputs.php';
+    require __DIR__ . 'php/DateTimeFunctions.php';
+    require __DIR__ . 'php/DBConnect.php';
     
     function createHistoricalEvent($username, $title, $desc, $charID, $eventID){
         $pdo = setUpPDO();
